@@ -1,0 +1,1375 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Inkwork Press</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  /* Layout: a tactile two-pane studio. The artwork lies on a Figma-style dotted canvas on the left; a raised control panel runs down the right. Dark by default, light on request. */
+  --bg:#161618;
+  --canvas:#1d1d20;
+  --dot:rgba(255,255,255,.2);
+  --vignette:rgba(0,0,0,.28);
+  --panel-top:#2b2b2f;
+  --panel-bot:#242427;
+  --line:rgba(255,255,255,.07);
+  --edge:rgba(0,0,0,.6);
+  --hi:rgba(255,255,255,.08);
+  --key-top:#3a3a40;
+  --key-bot:#2c2c31;
+  --key-side:#111113;
+  --drop:rgba(0,0,0,.4);
+  --well:#18181a;
+  --well-shade:rgba(0,0,0,.65);
+  --fill:#9a9aa3;
+  --text:#ededf0;
+  --muted:#a4a4ac;
+  --faint:#75757e;
+  --sel-top:#f5f5f7;
+  --sel-bot:#d9d9de;
+  --sel-text:#17171a;
+  --sel-side:#8e8e97;
+  --red-top:#e44a3f;
+  --red-bot:#b8291f;
+  --red-side:#761510;
+  --red:#c8312b;
+  --focus:#86a8ff;
+  --panel-shadow:0 24px 48px -20px rgba(0,0,0,.75),0 2px 6px rgba(0,0,0,.4);
+  --f-display:"Rozha One","Iowan Old Style",Georgia,serif;
+  --f-body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+body.light{
+  --bg:#e8e8eb;
+  --canvas:#eeeef0;
+  --dot:rgba(24,24,34,.2);
+  --vignette:rgba(30,30,50,.06);
+  --panel-top:#ffffff;
+  --panel-bot:#f8f8fa;
+  --line:rgba(0,0,0,.07);
+  --edge:rgba(0,0,0,.12);
+  --hi:rgba(255,255,255,.95);
+  --key-top:#ffffff;
+  --key-bot:#f0f0f3;
+  --key-side:#c6c6ce;
+  --drop:rgba(20,20,40,.14);
+  --well:#e7e7eb;
+  --well-shade:rgba(0,0,0,.13);
+  --fill:#3b3b42;
+  --text:#1b1b1f;
+  --muted:#5e5e67;
+  --faint:#8a8a93;
+  --sel-top:#43434b;
+  --sel-bot:#16161a;
+  --sel-text:#ffffff;
+  --sel-side:#000000;
+  --focus:#2563eb;
+  --panel-shadow:0 24px 44px -22px rgba(20,20,45,.3),0 2px 6px rgba(20,20,45,.08);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{height:100%}
+body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:var(--f-body);font-size:13px;line-height:1.45;display:flex;flex-direction:column;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0;-webkit-font-smoothing:antialiased;transition:background .25s,color .25s}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+
+/* raised keys: a face, a top highlight and a visible bottom edge that disappears when pressed */
+.key{font:500 13px/1 var(--f-body);color:var(--text);padding:10px 14px;border:0;border-radius:10px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:7px;
+  background:linear-gradient(180deg,var(--key-top),var(--key-bot));
+  box-shadow:inset 0 1px 0 var(--hi),0 0 0 1px var(--edge),0 2px 0 var(--key-side),0 5px 10px -3px var(--drop);
+  transition:transform .08s ease-out,box-shadow .08s ease-out,filter .15s}
+.key:hover{filter:brightness(1.07)}
+.key:active{transform:translateY(2px);box-shadow:inset 0 1px 0 var(--hi),0 0 0 1px var(--edge),0 0 0 var(--key-side),0 1px 2px var(--drop)}
+.key.primary{color:#fff;background:linear-gradient(180deg,var(--red-top),var(--red-bot));box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 0 0 1px rgba(80,8,4,.65),0 2px 0 var(--red-side),0 8px 16px -6px rgba(200,40,30,.55)}
+.key.primary:active{box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 0 0 1px rgba(80,8,4,.65),0 0 0 var(--red-side),0 1px 3px rgba(200,40,30,.4)}
+.key.small{padding:8px 11px;font-size:12.5px;border-radius:9px}
+.key.icon{padding:9px;border-radius:10px}
+.key svg{width:16px;height:16px;display:block}
+
+/* header */
+.top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px 20px;padding-block:14px}
+.brand{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 14px;min-width:0}
+.brand h1{font-family:var(--f-display);font-weight:400;font-size:27px;line-height:1;margin:0;letter-spacing:.01em}
+.brand h1 .sun{display:inline-block;width:.5em;height:.5em;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ee6a5f,var(--red) 60%,#9c2019);margin-left:.12em;vertical-align:.08em;box-shadow:0 2px 6px rgba(200,40,30,.45)}
+.brand p{margin:0;color:var(--muted);font-size:13px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.divider{width:1px;height:24px;background:var(--line);margin-inline:2px}
+.dl-lbl{color:var(--faint);font-size:12px;font-weight:500}
+
+/* workspace */
+.work{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) clamp(248px,25vw,304px);gap:14px;padding-bottom:14px}
+.left{min-width:0;min-height:0;display:flex;flex-direction:column;gap:12px}
+
+/* Figma-style canvas */
+.stage{flex:1;min-height:0;position:relative;border-radius:16px;overflow:hidden;display:grid;place-items:center;
+  background-color:var(--canvas);
+  background-image:radial-gradient(circle,var(--dot) 1.3px,transparent 1.8px),radial-gradient(ellipse at 50% 45%,transparent 50%,var(--vignette));
+  background-size:20px 20px,100% 100%;background-position:10px 10px,0 0;
+  box-shadow:inset 0 0 0 1px var(--line),inset 0 2px 10px rgba(0,0,0,.22)}
+body.dragging .stage{box-shadow:inset 0 0 0 2px var(--red),inset 0 2px 10px rgba(0,0,0,.22)}
+.art{position:relative;line-height:0;isolation:isolate}
+.art::before,.art::after{content:"";position:absolute;z-index:-1;bottom:12px;width:46%;height:24%;background:transparent;box-shadow:0 16px 18px rgba(0,0,0,.42)}
+.art::before{left:10px;transform:rotate(-2.4deg)}
+.art::after{right:10px;transform:rotate(2.4deg)}
+.art.clear::before,.art.clear::after{display:none}
+#main{display:block;cursor:crosshair;touch-action:none;box-shadow:0 0 0 1px rgba(0,0,0,.08),0 1px 1px rgba(0,0,0,.2),0 4px 8px rgba(0,0,0,.16),0 22px 44px -16px rgba(0,0,0,.5)}
+#main.grab{cursor:grab}
+#main.grabbing{cursor:grabbing}
+#overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.art.clear #main,.thumb.clear canvas{background-color:#d9d7d0;background-image:linear-gradient(45deg,#c4c2bb 25%,transparent 25%,transparent 75%,#c4c2bb 75%),linear-gradient(45deg,#c4c2bb 25%,transparent 25%,transparent 75%,#c4c2bb 75%);background-size:16px 16px;background-position:0 0,8px 8px}
+.chip{position:absolute;bottom:14px;font:500 11.5px/1.3 var(--f-mono);color:#fff;padding:7px 12px;border-radius:999px;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums;max-width:calc(100% - 28px);
+  background:linear-gradient(180deg,#45454d,#1a1a1e);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 0 0 1px rgba(0,0,0,.5),0 6px 14px -4px rgba(0,0,0,.5)}
+.readout{left:14px}
+.busy{right:14px}
+
+/* process strip */
+.strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.step{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+.thumb{height:76px;border-radius:12px;padding:7px;background:linear-gradient(180deg,var(--panel-top),var(--panel-bot));box-shadow:inset 0 1px 0 var(--hi),0 0 0 1px var(--edge),0 6px 14px -8px var(--drop)}
+.thumb canvas{width:100%;height:100%;object-fit:contain;display:block;border-radius:4px}
+.step figcaption{font-size:11.5px;color:var(--muted);display:flex;gap:7px;align-items:baseline;line-height:1.3;padding-left:2px}
+.step .n{font:500 10.5px var(--f-mono);color:var(--text)}
+
+/* control panel */
+.rail{min-height:0;overflow-y:auto;border-radius:16px;padding:4px 16px 10px;background:linear-gradient(180deg,var(--panel-top),var(--panel-bot));box-shadow:inset 0 1px 0 var(--hi),0 0 0 1px var(--edge),var(--panel-shadow);scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.group{padding:15px 0 17px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:12px}
+.group:last-child{border-bottom:0}
+.group h2{font:600 10.5px/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin:0}
+.field{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px 10px;align-items:center}
+.field label{font-size:13px}
+.field output{font:11.5px var(--f-mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.field input{grid-column:1/-1}
+
+/* sliders: an inset groove and a raised knob */
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:22px;background:transparent;margin:0;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:linear-gradient(var(--fill),var(--fill)) 0 0/var(--p,50%) 100% no-repeat,var(--well);box-shadow:inset 0 1px 2px var(--well-shade),inset 0 0 0 1px var(--line)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;margin-top:-7px;border-radius:50%;background:linear-gradient(180deg,#ffffff,#d8d8de);box-shadow:0 0 0 1px rgba(0,0,0,.3),0 2px 0 #92929b,0 4px 7px rgba(0,0,0,.35);transition:transform .08s,box-shadow .08s}
+input[type=range]:active::-webkit-slider-thumb{transform:translateY(1px);box-shadow:0 0 0 1px rgba(0,0,0,.3),0 1px 0 #92929b,0 2px 3px rgba(0,0,0,.3)}
+input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(--well);box-shadow:inset 0 1px 2px var(--well-shade)}
+input[type=range]::-moz-range-progress{height:6px;border-radius:3px;background:var(--fill)}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border:0;border-radius:50%;background:linear-gradient(180deg,#ffffff,#d8d8de);box-shadow:0 0 0 1px rgba(0,0,0,.3),0 2px 0 #92929b,0 4px 7px rgba(0,0,0,.35)}
+
+/* toggles: inset track, chunky knob with a visible side */
+.switch{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px;cursor:pointer}
+.switch input{appearance:none;-webkit-appearance:none;width:42px;height:24px;border-radius:12px;position:relative;flex:none;margin:0;cursor:pointer;background:var(--well);box-shadow:inset 0 1px 3px var(--well-shade),inset 0 0 0 1px var(--line);transition:background .2s}
+.switch input::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:17px;border-radius:9px;background:linear-gradient(180deg,#ffffff,#dadade);box-shadow:0 0 0 1px rgba(0,0,0,.25),0 3px 0 #8f8f98,0 4px 6px rgba(0,0,0,.35);transition:transform .22s cubic-bezier(.2,.8,.2,1)}
+.switch input:checked{background:linear-gradient(180deg,var(--red-bot),var(--red-top));box-shadow:inset 0 1px 3px rgba(60,5,2,.6),inset 0 0 0 1px rgba(80,8,4,.5)}
+.switch input:checked::after{transform:translateX(18px)}
+.switch input:active::after{box-shadow:0 0 0 1px rgba(0,0,0,.25),0 1px 0 #8f8f98,0 2px 3px rgba(0,0,0,.3);top:4px}
+
+/* segmented control: inset tray, the chosen option pops up */
+.seg{display:flex;padding:3px;gap:3px;border-radius:12px;background:var(--well);box-shadow:inset 0 1px 3px var(--well-shade),inset 0 0 0 1px var(--line)}
+.seg button{flex:1;font:500 12.5px/1 var(--f-body);padding:9px 10px;border:0;border-radius:9px;background:transparent;color:var(--muted);cursor:pointer;white-space:nowrap;transition:color .15s}
+.seg button:hover{color:var(--text)}
+.seg button[aria-pressed="true"]{color:var(--sel-text);background:linear-gradient(180deg,var(--sel-top),var(--sel-bot));box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 0 0 1px var(--edge),0 2px 0 var(--sel-side),0 4px 8px -2px var(--drop)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.row .seg{flex:1}
+.file{font:11.5px/1.4 var(--f-mono);color:var(--muted);overflow-wrap:anywhere}
+.hint{font-size:12px;color:var(--faint);margin:0;line-height:1.45}
+.swatches{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.swatch{display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 2px 7px;border:0;border-radius:10px;cursor:pointer;font-size:11.5px;color:var(--muted);
+  background:linear-gradient(180deg,var(--key-top),var(--key-bot));box-shadow:inset 0 1px 0 var(--hi),0 0 0 1px var(--edge),0 2px 0 var(--key-side),0 4px 8px -3px var(--drop);transition:transform .08s,box-shadow .08s}
+.swatch i{width:22px;height:22px;border-radius:50%;display:block;box-shadow:inset 0 1px 2px rgba(0,0,0,.25),0 0 0 1px rgba(0,0,0,.2)}
+.swatch[aria-pressed="true"]{color:var(--text);transform:translateY(2px);box-shadow:inset 0 1px 0 var(--hi),0 0 0 1.5px var(--red),0 0 0 var(--key-side),0 1px 2px var(--drop)}
+.swatch i.none{background-color:#d9d7d0;background-image:linear-gradient(45deg,#b9b7b0 25%,transparent 25%,transparent 75%,#b9b7b0 75%),linear-gradient(45deg,#b9b7b0 25%,transparent 25%,transparent 75%,#b9b7b0 75%);background-size:6px 6px;background-position:0 0,3px 3px}
+.foot{color:var(--faint);font-size:11.5px;margin:4px 0 0}
+
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);color:#fff;padding:10px 16px;border-radius:999px;font-weight:500;max-width:calc(100% - 32px);z-index:30;background:linear-gradient(180deg,#45454d,#1a1a1e);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 0 0 1px rgba(0,0,0,.5),0 12px 28px -8px rgba(0,0,0,.6)}
+.sheet{position:fixed;inset:0;background:rgba(12,12,14,.88);display:grid;place-items:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));z-index:20;color:#fff}
+.sheet .box{display:flex;flex-direction:column;gap:14px;align-items:center;max-width:100%}
+.sheet img{max-width:100%;max-height:76vh;display:block;background:#d9d7d0;border-radius:4px}
+.sheet p{margin:0}
+
+@media (max-width:640px){
+  html,body{height:auto}
+  body{display:block;padding-bottom:24px}
+  .work{display:flex;flex-direction:column}
+  .stage{flex:none;height:min(64vh,520px)}
+  .rail{overflow:visible}
+  .strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="top">
+  <div class="brand">
+    <h1>Inkwork Press<span class="sun" aria-hidden="true"></span></h1>
+    <p>PNG in, black-and-red ornamental ink out.</p>
+  </div>
+  <div class="actions">
+    <button class="key" id="openBtn" type="button">Upload PNG / JPG</button>
+    <span class="divider" aria-hidden="true"></span>
+    <span class="dl-lbl" id="dlLbl">Download</span>
+    <div class="row" role="group" aria-labelledby="dlLbl">
+      <button class="key primary" id="saveBtn" type="button" title="The finished illustration on its paper background">PNG</button>
+      <button class="key" id="saveBare" type="button" title="Ink and red only, on a transparent background">Transparent PNG</button>
+      <button class="key" id="saveSvg" type="button" title="Editable vectors with paper, red and ink on separate layers">SVG</button>
+    </div>
+    <span class="divider" aria-hidden="true"></span>
+    <button class="key icon" id="themeBtn" type="button" aria-label="Switch to light mode" title="Switch to light mode">
+      <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+    </button>
+    <input type="file" id="file" accept="image/png,image/jpeg,image/webp" hidden>
+  </div>
+</header>
+
+<div class="work">
+  <section class="left" aria-label="Artwork">
+    <div class="stage" id="stage">
+      <div class="art" id="art">
+        <canvas id="main" width="10" height="10" aria-label="Converted illustration"></canvas>
+        <canvas id="overlay" width="10" height="10" aria-hidden="true"></canvas>
+      </div>
+      <div class="chip readout" id="readout" aria-live="polite" hidden></div>
+      <div class="chip busy" id="busy" hidden>Inking…</div>
+    </div>
+    <div class="strip">
+      <figure class="step"><div class="thumb clear"><canvas id="t1"></canvas></div><figcaption><span class="n">1</span>Cut out</figcaption></figure>
+      <figure class="step"><div class="thumb"><canvas id="t2"></canvas></div><figcaption><span class="n">2</span>Split into parts</figcaption></figure>
+      <figure class="step"><div class="thumb"><canvas id="t3"></canvas></div><figcaption><span class="n">3</span>Pattern and line</figcaption></figure>
+      <figure class="step"><div class="thumb"><canvas id="t4"></canvas></div><figcaption><span class="n">4</span>Red and paper</figcaption></figure>
+    </div>
+  </section>
+
+  <aside class="rail" aria-label="Controls">
+    <div class="group">
+      <h2 id="modeLbl">When you click the drawing</h2>
+      <div class="seg" role="group" aria-labelledby="modeLbl">
+        <button type="button" id="modeRed" aria-pressed="true">Paint part red</button>
+        <button type="button" id="modePat" aria-pressed="false">Change pattern</button>
+      </div>
+      <p class="hint" id="modeHint">Click a part to make it red. Click it again to remove the red. Drag the red circle to move it.</p>
+    </div>
+    <div class="group">
+      <h2>Image</h2>
+      <div class="file" id="fileInfo">Sample teapot</div>
+      <p class="hint">Upload, drop or paste a PNG or JPG. Cut-outs on a transparent background work best.</p>
+      <label class="switch">Remove plain background <input type="checkbox" id="removeBg" checked></label>
+      <div class="row"><button class="key small" type="button" id="sampleBtn">Load the sample</button></div>
+    </div>
+    <div class="group">
+      <h2>Parts</h2>
+      <div class="field"><label for="parts">Tone levels</label><output id="partsOut" for="parts"></output><input type="range" id="parts" min="3" max="10" step="1" value="6"></div>
+      <div class="field"><label for="merge">Merge small parts</label><output id="mergeOut" for="merge"></output><input type="range" id="merge" min="0.2" max="3" step="0.1" value="1"></div>
+      <div class="row"><button class="key small" type="button" id="shuffle">Shuffle patterns</button></div>
+    </div>
+    <div class="group">
+      <h2>Pattern and line</h2>
+      <div class="field"><label for="density">Pattern density</label><output id="densityOut" for="density"></output><input type="range" id="density" min="0.6" max="1.8" step="0.05" value="1"></div>
+      <div class="field"><label for="tone">Darkness</label><output id="toneOut" for="tone"></output><input type="range" id="tone" min="-1" max="1" step="0.05" value="0"></div>
+      <div class="field"><label for="line">Line weight</label><output id="lineOut" for="line"></output><input type="range" id="line" min="1" max="4" step="0.5" value="2"></div>
+      <div class="field"><label for="detail">Inner detail lines</label><output id="detailOut" for="detail"></output><input type="range" id="detail" min="0" max="1" step="0.05" value="0.2"></div>
+      <label class="switch">Inner rim on each part <input type="checkbox" id="rim" checked></label>
+      <div class="row">
+        <span class="hint" id="inkLbl">Ink</span>
+        <div class="seg" role="group" aria-labelledby="inkLbl">
+          <button type="button" id="inkBlack" aria-pressed="true">Black</button>
+          <button type="button" id="inkGraphite" aria-pressed="false">Graphite</button>
+        </div>
+      </div>
+    </div>
+    <div class="group">
+      <h2>Red</h2>
+      <label class="switch">Red circle behind the object <input type="checkbox" id="disc" checked></label>
+      <div class="field"><label for="discSize">Circle size</label><output id="discSizeOut" for="discSize"></output><input type="range" id="discSize" min="0.12" max="0.7" step="0.01" value="0.3"></div>
+      <div class="row"><button class="key small" type="button" id="clearRed">Clear red parts</button></div>
+    </div>
+    <div class="group">
+      <h2>Paper</h2>
+      <div class="swatches" role="group" aria-label="Paper colour">
+        <button type="button" class="swatch" data-paper="sage" aria-pressed="true"><i style="background:#dddec4"></i>Sage</button>
+        <button type="button" class="swatch" data-paper="cream" aria-pressed="false"><i style="background:#e9e4d4"></i>Cream</button>
+        <button type="button" class="swatch" data-paper="white" aria-pressed="false"><i style="background:#f4f3ee"></i>White</button>
+        <button type="button" class="swatch" data-paper="none" aria-pressed="false"><i class="none"></i>None</button>
+      </div>
+      <div class="field"><label for="grain">Paper grain</label><output id="grainOut" for="grain"></output><input type="range" id="grain" min="0" max="1" step="0.05" value="0.7"></div>
+      <p class="foot">Runs in your browser with plain image processing, no AI. Your images never leave this page.</p>
+    </div>
+  </aside>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+<div class="sheet" id="sheet" hidden>
+  <div class="box">
+    <img id="sheetImg" alt="Finished illustration">
+    <p>Right-click or long-press the image to save it.</p>
+    <button class="key" type="button" id="sheetClose">Close</button>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+
+/* ---------- constants ---------- */
+const WORK = 640;   // analysis resolution, longest side
+const OUT = 1400;   // render resolution, longest side of the paper
+const PAD = 0.17;   // paper margin around the object, share of its longest side
+const TAU = Math.PI * 2;
+const PAPERS = { sage:[221,222,196], cream:[233,228,212], white:[244,243,238] };
+const RED = [198,46,40];
+const INKS = { black:[20,19,18], graphite:[84,83,78] };
+
+const SETS = {
+  solid:['solid'],
+  dark:['revBands','echoRev','revDots','revStripes'],
+  deep:['bands','scallops','echo','scales','leaves','crosshatch'],
+  mid:['echo','bands','stripes','circles','scallops','triangles','waves'],
+  light:['echo','dots','ticks','tinyCircles'],
+  blank:['none'],
+};
+const ALL = ['solid','echoRev','revBands','revDots','revStripes','crosshatch','bands','scallops','scales','leaves','echo','hatch','zigzag','stripes','circles','waves','concentric','triangles','dots','ticks','tinyCircles','sparse','none'];
+const NAMES = { solid:'solid ink', echoRev:'contour lines on black', revDots:'dots on black', revStripes:'lines on black', revBands:'border bands on black', crosshatch:'crosshatch', bands:'border bands', scallops:'scallops', scales:'scales', leaves:'leaf chain', echo:'contour lines', hatch:'fine hatching', zigzag:'zigzag', stripes:'stripes', circles:'rings', waves:'waves', concentric:'ripples', triangles:'triangles', dots:'dots', ticks:'ticks', tinyCircles:'small rings', sparse:'open lines', none:'blank paper' };
+const PIXEL_PATTERNS = new Set(['solid','echo','echoRev','none']);
+
+const P = { parts:6, merge:1, removeBg:true, density:1, tone:0, line:2, detail:0.2, rim:true, ink:'black', disc:true, discSize:0.3, paper:'sage', grain:0.7, mode:'red' };
+
+let src = null;        // { canvas, name }
+let A = null;          // analysis result
+let INK = null;        // Float32Array ink coverage at render size
+let seed = 7;
+let red = new Set();
+const override = new Map();
+const disc = { u:0.64, v:0.3 };
+let texCache = null;
+
+const $ = id => document.getElementById(id);
+const mainC = $('main'), overC = $('overlay');
+
+/* ---------- small helpers ---------- */
+function mk(w, h){ const c = document.createElement('canvas'); c.width = w; c.height = h; return c; }
+function rng(s){ return () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function hash(a, b){ let h = Math.imul(a ^ 0x9e3779b9, 0x85ebca6b) ^ Math.imul(b + 0x7f4a7c15, 0xc2b2ae35); h ^= h >>> 13; h = Math.imul(h, 0x27d4eb2f); h ^= h >>> 15; return h >>> 0; }
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const smooth = (e0, e1, v) => { const t = clamp((v - e0) / (e1 - e0), 0, 1); return t * t * (3 - 2 * t); };
+const nextFrame = () => new Promise(r => { let done = false; const go = () => { if (!done){ done = true; setTimeout(r, 0); } }; requestAnimationFrame(go); setTimeout(go, 80); });
+
+/* Connected components over pixels where active(i), joining 4-neighbours where same(i, j). */
+function components(w, h, active, same){
+  const N = w * h, lab = new Int32Array(N).fill(-1), stack = new Int32Array(N), sizes = [];
+  let n = 0;
+  for (let s = 0; s < N; s++){
+    if (lab[s] !== -1 || !active(s)) continue;
+    let sp = 0, cnt = 0; stack[sp++] = s; lab[s] = n;
+    while (sp){
+      const i = stack[--sp]; cnt++; const x = i % w;
+      if (x > 0){ const j = i - 1; if (lab[j] === -1 && active(j) && same(i, j)){ lab[j] = n; stack[sp++] = j; } }
+      if (x < w - 1){ const j = i + 1; if (lab[j] === -1 && active(j) && same(i, j)){ lab[j] = n; stack[sp++] = j; } }
+      if (i >= w){ const j = i - w; if (lab[j] === -1 && active(j) && same(i, j)){ lab[j] = n; stack[sp++] = j; } }
+      if (i < N - w){ const j = i + w; if (lab[j] === -1 && active(j) && same(i, j)){ lab[j] = n; stack[sp++] = j; } }
+    }
+    sizes.push(cnt); n++;
+  }
+  return { lab, sizes, n };
+}
+
+/* Exact Euclidean distance to the nearest seed pixel (Felzenszwalb & Huttenlocher). */
+function edt(seedMask, W, H){
+  const INF = 1e20, M = Math.max(W, H);
+  const f = new Float64Array(M), d = new Float64Array(M), v = new Int32Array(M), z = new Float64Array(M + 1);
+  const g = new Float32Array(W * H);
+  for (let i = 0; i < g.length; i++) g[i] = seedMask[i] ? 0 : INF;
+  const dt = n => {
+    let k = 0; v[0] = 0; z[0] = -INF; z[1] = INF;
+    for (let q = 1; q < n; q++){
+      let s = ((f[q] + q * q) - (f[v[k]] + v[k] * v[k])) / (2 * q - 2 * v[k]);
+      while (s <= z[k]){ k--; s = ((f[q] + q * q) - (f[v[k]] + v[k] * v[k])) / (2 * q - 2 * v[k]); }
+      k++; v[k] = q; z[k] = s; z[k + 1] = INF;
+    }
+    k = 0;
+    for (let q = 0; q < n; q++){ while (z[k + 1] < q) k++; const t = q - v[k]; d[q] = t * t + f[v[k]]; }
+  };
+  for (let x = 0; x < W; x++){ for (let y = 0; y < H; y++) f[y] = g[y * W + x]; dt(H); for (let y = 0; y < H; y++) g[y * W + x] = d[y]; }
+  for (let y = 0; y < H; y++){ const o = y * W; for (let x = 0; x < W; x++) f[x] = g[o + x]; dt(W); for (let x = 0; x < W; x++) g[o + x] = Math.sqrt(d[x]); }
+  return g;
+}
+
+/* ---------- step 1: cut out ---------- */
+function floodBackground(R, G, B, w, h){
+  const N = w * h, bg = new Uint8Array(N), stack = new Int32Array(N);
+  const border = [];
+  for (let x = 0; x < w; x++){ border.push(x, (h - 1) * w + x); }
+  for (let y = 1; y < h - 1; y++){ border.push(y * w, y * w + w - 1); }
+  const med = a => { a.sort((p, q) => p - q); return a[a.length >> 1]; };
+  const mr = med(border.map(i => R[i])), mg = med(border.map(i => G[i])), mb = med(border.map(i => B[i]));
+  const far = i => Math.hypot(R[i] - mr, G[i] - mg, B[i] - mb);
+  let sp = 0;
+  for (const i of border){ if (!bg[i] && far(i) < 70){ bg[i] = 1; stack[sp++] = i; } }
+  while (sp){
+    const i = stack[--sp], x = i % w;
+    const tryJ = j => {
+      if (bg[j]) return;
+      const d = Math.abs(R[i] - R[j]) + Math.abs(G[i] - G[j]) + Math.abs(B[i] - B[j]);
+      if (d < 18 && far(j) < 95){ bg[j] = 1; stack[sp++] = j; }
+    };
+    if (x > 0) tryJ(i - 1);
+    if (x < w - 1) tryJ(i + 1);
+    if (i >= w) tryJ(i - w);
+    if (i < N - w) tryJ(i + w);
+  }
+  let cnt = 0; for (let i = 0; i < N; i++) cnt += bg[i];
+  const mask = new Uint8Array(N);
+  if (cnt < N * 0.03 || cnt > N * 0.97){ mask.fill(1); return mask; }
+  for (let i = 0; i < N; i++) mask[i] = bg[i] ? 0 : 1;
+  return mask;
+}
+
+function tidyMask(mask, w, h){
+  const N = w * h;
+  const fg = components(w, h, i => mask[i] === 1, () => true);
+  let big = 0; for (const s of fg.sizes) if (s > big) big = s;
+  for (let i = 0; i < N; i++) if (mask[i] && fg.sizes[fg.lab[i]] < big * 0.03) mask[i] = 0;
+  const holes = components(w, h, i => mask[i] === 0, () => true);
+  const touch = new Uint8Array(holes.n);
+  for (let x = 0; x < w; x++){ const a = holes.lab[x], b = holes.lab[(h - 1) * w + x]; if (a >= 0) touch[a] = 1; if (b >= 0) touch[b] = 1; }
+  for (let y = 0; y < h; y++){ const a = holes.lab[y * w], b = holes.lab[y * w + w - 1]; if (a >= 0) touch[a] = 1; if (b >= 0) touch[b] = 1; }
+  for (let i = 0; i < N; i++){ if (!mask[i]){ const l = holes.lab[i]; if (!touch[l] && holes.sizes[l] < N * 0.004) mask[i] = 1; } }
+}
+
+/* ---------- step 2: split into parts ---------- */
+function bilateral(R, G, B, w, h, mask, passes){
+  const LUT = new Float32Array(4096), sig = 2 * 26 * 26;
+  for (let k = 0; k < 4096; k++) LUT[k] = Math.exp(-(k * 16) / sig);
+  const ws = []; for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) ws.push(Math.exp(-(dx * dx + dy * dy) / 5));
+  for (let p = 0; p < passes; p++){
+    const r2 = new Float32Array(R.length), g2 = new Float32Array(R.length), b2 = new Float32Array(R.length);
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++){
+      const i = y * w + x;
+      if (!mask[i]){ r2[i] = R[i]; g2[i] = G[i]; b2[i] = B[i]; continue; }
+      let sr = 0, sg = 0, sb = 0, sw = 0, k = 0;
+      for (let dy = -2; dy <= 2; dy++){
+        const yy = y + dy;
+        if (yy < 0 || yy >= h){ k += 5; continue; }
+        for (let dx = -2; dx <= 2; dx++, k++){
+          const xx = x + dx; if (xx < 0 || xx >= w) continue;
+          const j = yy * w + xx; if (!mask[j]) continue;
+          const dr = R[j] - R[i], dg = G[j] - G[i], db = B[j] - B[i];
+          const wt = ws[k] * LUT[Math.min(4095, ((dr * dr + dg * dg + db * db) / 16) | 0)];
+          sr += R[j] * wt; sg += G[j] * wt; sb += B[j] * wt; sw += wt;
+        }
+      }
+      r2[i] = sr / sw; g2[i] = sg / sw; b2[i] = sb / sw;
+    }
+    R.set(r2); G.set(g2); B.set(b2);
+  }
+}
+
+function toLab(R, G, B, N){
+  const lin = new Float32Array(256);
+  for (let v = 0; v < 256; v++){ const c = v / 255; lin[v] = c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }
+  const f = t => t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116;
+  const L = new Float32Array(N), a = new Float32Array(N), b = new Float32Array(N);
+  for (let i = 0; i < N; i++){
+    const r = lin[clamp(Math.round(R[i]), 0, 255)], g = lin[clamp(Math.round(G[i]), 0, 255)], bl = lin[clamp(Math.round(B[i]), 0, 255)];
+    const X = (r * 0.4124 + g * 0.3576 + bl * 0.1805) / 0.95047, Y = r * 0.2126 + g * 0.7152 + bl * 0.0722, Z = (r * 0.0193 + g * 0.1192 + bl * 0.9505) / 1.08883;
+    const fx = f(X), fy = f(Y), fz = f(Z);
+    L[i] = 116 * fy - 16; a[i] = 500 * (fx - fy); b[i] = 200 * (fy - fz);
+  }
+  return { L, a, b };
+}
+
+function kmeans(F, sample, K, rnd){
+  const C = new Float32Array(K * 3), S = sample.length;
+  const d2 = (i, c) => { const p = i * 3, q = c * 3; const x = F[p] - C[q], y = F[p + 1] - C[q + 1], z = F[p + 2] - C[q + 2]; return x * x + y * y + z * z; };
+  const first = sample[(rnd() * S) | 0]; C[0] = F[first * 3]; C[1] = F[first * 3 + 1]; C[2] = F[first * 3 + 2];
+  const D = new Float32Array(S).fill(Infinity);
+  for (let c = 1; c < K; c++){
+    let tot = 0;
+    for (let s = 0; s < S; s++){ const v = d2(sample[s], c - 1); if (v < D[s]) D[s] = v; tot += D[s]; }
+    let t = rnd() * tot, pick = sample[S - 1];
+    for (let s = 0; s < S; s++){ t -= D[s]; if (t <= 0){ pick = sample[s]; break; } }
+    C[c * 3] = F[pick * 3]; C[c * 3 + 1] = F[pick * 3 + 1]; C[c * 3 + 2] = F[pick * 3 + 2];
+  }
+  for (let it = 0; it < 14; it++){
+    const sum = new Float64Array(K * 3), cnt = new Int32Array(K);
+    for (let s = 0; s < S; s++){
+      let best = 0, bd = Infinity;
+      for (let c = 0; c < K; c++){ const v = d2(sample[s], c); if (v < bd){ bd = v; best = c; } }
+      cnt[best]++; const p = sample[s] * 3;
+      sum[best * 3] += F[p]; sum[best * 3 + 1] += F[p + 1]; sum[best * 3 + 2] += F[p + 2];
+    }
+    for (let c = 0; c < K; c++){
+      if (cnt[c]){ C[c * 3] = sum[c * 3] / cnt[c]; C[c * 3 + 1] = sum[c * 3 + 1] / cnt[c]; C[c * 3 + 2] = sum[c * 3 + 2] / cnt[c]; }
+      else { const p = sample[(rnd() * S) | 0] * 3; C[c * 3] = F[p]; C[c * 3 + 1] = F[p + 1]; C[c * 3 + 2] = F[p + 2]; }
+    }
+  }
+  return C;
+}
+
+/* Majority vote in a (2r+1)² window: rounds off ragged part edges. */
+function majority(cl, w, h, mask, K, passes, r){
+  const cnt = new Int32Array(K);
+  for (let p = 0; p < passes; p++){
+    const out = cl.slice();
+    for (let y = r; y < h - r; y++) for (let x = r; x < w - r; x++){
+      const i = y * w + x; if (!mask[i]) continue;
+      for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++){ const j = i + dy * w + dx; if (mask[j]) cnt[cl[j]]++; }
+      let best = cl[i], bc = cnt[best];
+      for (let c = 0; c < K; c++){ if (cnt[c] > bc){ bc = cnt[c]; best = c; } cnt[c] = 0; }
+      out[i] = best;
+    }
+    cl.set(out);
+  }
+}
+
+function mergeSmall(lab, sizes, n, w, h, minArea){
+  const N = w * h, parent = new Int32Array(n), size = Int32Array.from(sizes);
+  for (let i = 0; i < n; i++) parent[i] = i;
+  const find = c => { while (parent[c] !== c){ parent[c] = parent[parent[c]]; c = parent[c]; } return c; };
+  const lists = Array.from({ length:n }, () => []);
+  for (let i = 0; i < N; i++) if (lab[i] >= 0) lists[lab[i]].push(i);
+  const order = Array.from({ length:n }, (_, i) => i).sort((p, q) => sizes[p] - sizes[q]);
+  const cnt = new Map();
+  for (const c of order){
+    if (find(c) !== c || size[c] >= minArea) continue;
+    cnt.clear();
+    for (const i of lists[c]){
+      const x = i % w;
+      const look = j => { const l = lab[j]; if (l < 0) return; const t = find(l); if (t !== c) cnt.set(t, (cnt.get(t) || 0) + 1); };
+      if (x > 0) look(i - 1); if (x < w - 1) look(i + 1); if (i >= w) look(i - w); if (i < N - w) look(i + w);
+    }
+    if (!cnt.size) continue;
+    let best = -1, bc = -1; for (const [t, v] of cnt) if (v > bc){ bc = v; best = t; }
+    parent[c] = best; size[best] += size[c];
+    const L = lists[best]; for (const i of lists[c]) L.push(i); lists[c] = null;
+  }
+  const map = new Int32Array(n).fill(-1); let m = 0;
+  for (let i = 0; i < N; i++){ if (lab[i] < 0) continue; const r = find(lab[i]); if (map[r] < 0) map[r] = m++; lab[i] = map[r]; }
+  return m;
+}
+
+function analyze(srcCanvas){
+  const k = WORK / Math.max(srcCanvas.width, srcCanvas.height);
+  const w = Math.max(8, Math.round(srcCanvas.width * k)), h = Math.max(8, Math.round(srcCanvas.height * k)), N = w * h;
+  const wc = mk(w, h), wx = wc.getContext('2d', { willReadFrequently:true });
+  wx.imageSmoothingQuality = 'high'; wx.drawImage(srcCanvas, 0, 0, w, h);
+  const d = wx.getImageData(0, 0, w, h).data;
+  const R = new Float32Array(N), G = new Float32Array(N), B = new Float32Array(N);
+  let see = 0;
+  for (let i = 0; i < N; i++){
+    const al = d[i * 4 + 3] / 255; if (al < 0.98) see++;
+    R[i] = d[i * 4] * al + 255 * (1 - al); G[i] = d[i * 4 + 1] * al + 255 * (1 - al); B[i] = d[i * 4 + 2] * al + 255 * (1 - al);
+  }
+  const hasAlpha = see > N * 0.01;
+  let mask = new Uint8Array(N);
+  if (hasAlpha) for (let i = 0; i < N; i++) mask[i] = d[i * 4 + 3] > 128 ? 1 : 0;
+  else if (P.removeBg) mask = floodBackground(R, G, B, w, h);
+  else mask.fill(1);
+  tidyMask(mask, w, h);
+  let area = 0; for (let i = 0; i < N; i++) area += mask[i];
+  if (area < 64){ mask.fill(1); area = N; }
+
+  bilateral(R, G, B, w, h, mask, 3);
+  const lab = toLab(R, G, B, N);
+
+  // stretch lightness inside the object so every picture uses the full tone range
+  const hist = new Int32Array(1001);
+  for (let i = 0; i < N; i++) if (mask[i]) hist[clamp(Math.round(lab.L[i] * 10), 0, 1000)]++;
+  let acc = 0, lo = 0, hi = 1000;
+  for (let v = 0; v <= 1000; v++){ acc += hist[v]; if (acc >= area * 0.02){ lo = v; break; } }
+  acc = 0; for (let v = 1000; v >= 0; v--){ acc += hist[v]; if (acc >= area * 0.02){ hi = v; break; } }
+  const Ln = new Float32Array(N), span = Math.max(1, hi - lo);
+  for (let i = 0; i < N; i++) Ln[i] = clamp((lab.L[i] * 10 - lo) / span, 0, 1);
+
+  // k-means on tone plus colour
+  const F = new Float32Array(N * 3);
+  for (let i = 0; i < N; i++){ F[i * 3] = Ln[i] * 100; F[i * 3 + 1] = lab.a[i] * 0.75; F[i * 3 + 2] = lab.b[i] * 0.75; }
+  const idx = []; const stride = Math.max(1, Math.floor(area / 14000));
+  for (let i = 0, c = 0; i < N; i++) if (mask[i] && (c++ % stride === 0)) idx.push(i);
+  const K = P.parts;
+  const C = kmeans(F, idx, K, rng(1234));
+  const order = Array.from({ length:K }, (_, c) => c).sort((p, q) => C[p * 3] - C[q * 3]);
+  const rank = new Int32Array(K); order.forEach((c, r) => rank[c] = r);
+  const cl = new Int32Array(N);
+  for (let i = 0; i < N; i++){
+    if (!mask[i]) continue;
+    let best = 0, bd = Infinity; const p = i * 3;
+    for (let c = 0; c < K; c++){ const x = F[p] - C[c * 3], y = F[p + 1] - C[c * 3 + 1], z = F[p + 2] - C[c * 3 + 2]; const v = x * x + y * y + z * z; if (v < bd){ bd = v; best = c; } }
+    cl[i] = rank[best];
+  }
+  majority(cl, w, h, mask, K, 2, 1);
+  majority(cl, w, h, mask, K, 2, 2);
+
+  const cc = components(w, h, i => mask[i] === 1, (i, j) => cl[i] === cl[j]);
+  const labels = cc.lab;
+  const nReg = mergeSmall(labels, cc.sizes, cc.n, w, h, Math.max(6, area * P.merge / 100));
+
+  // per-part stats
+  const regions = Array.from({ length:nReg }, (_, id) => ({ id, area:0, sumL:0, sx:0, sy:0, sxx:0, syy:0, sxy:0, x0:w, y0:h, x1:0, y1:0, nb:new Map() }));
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++){
+    const i = y * w + x, l = labels[i]; if (l < 0) continue;
+    const r = regions[l];
+    r.area++; r.sumL += Ln[i]; r.sx += x; r.sy += y; r.sxx += x * x; r.syy += y * y; r.sxy += x * y;
+    if (x < r.x0) r.x0 = x; if (x > r.x1) r.x1 = x; if (y < r.y0) r.y0 = y; if (y > r.y1) r.y1 = y;
+    if (x < w - 1){ const o = labels[i + 1]; if (o >= 0 && o !== l){ r.nb.set(o, (r.nb.get(o) || 0) + 1); regions[o].nb.set(l, (regions[o].nb.get(l) || 0) + 1); } }
+    if (y < h - 1){ const o = labels[i + w]; if (o >= 0 && o !== l){ r.nb.set(o, (r.nb.get(o) || 0) + 1); regions[o].nb.set(l, (regions[o].nb.get(l) || 0) + 1); } }
+  }
+  for (const r of regions){
+    r.tone = r.sumL / r.area; r.cx = r.sx / r.area; r.cy = r.sy / r.area;
+    const mxx = r.sxx / r.area - r.cx * r.cx, myy = r.syy / r.area - r.cy * r.cy, mxy = r.sxy / r.area - r.cx * r.cy;
+    const tr = mxx + myy, det = mxx * myy - mxy * mxy, disc2 = Math.sqrt(Math.max(0, tr * tr / 4 - det));
+    const l1 = tr / 2 + disc2, l2 = Math.max(1e-6, tr / 2 - disc2);
+    let ang = 0.5 * Math.atan2(2 * mxy, mxx - myy);
+    if (Math.sqrt(l1 / l2) < 1.3) ang = 0;
+    let deg = ang * 180 / Math.PI;
+    for (const s of [-90, 0, 90]) if (Math.abs(deg - s) < 12) deg = s;
+    for (const s of [-45, 45]) if (Math.abs(deg - s) < 6) deg = s;
+    r.angle = deg * Math.PI / 180;
+  }
+
+  // object box and paper frame
+  let bx0 = w, by0 = h, bx1 = 0, by1 = 0;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (mask[y * w + x]){ if (x < bx0) bx0 = x; if (x > bx1) bx1 = x; if (y < by0) by0 = y; if (y > by1) by1 = y; }
+  const bw = bx1 - bx0 + 1, bh = by1 - by0 + 1, m = Math.max(bw, bh), pad = m * PAD;
+  let fw = bw + 2 * pad, fh = bh + 2 * pad;
+  if (fw / fh < 0.74) fw = fh * 0.74;
+  if (fw / fh > 1.5) fh = fw / 1.5;
+  const fx = (bx0 + bx1 + 1) / 2 - fw / 2, fy = (by0 + by1 + 1) / 2 - fh / 2;
+  const sc = OUT / Math.max(fw, fh), OW = Math.round(fw * sc), OH = Math.round(fh * sc);
+
+  // edges for inner detail lines (Sobel + thinning)
+  const mag = new Float32Array(N), dir = new Uint8Array(N);
+  for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++){
+    const i = y * w + x; if (!mask[i]) continue;
+    const gx = (Ln[i - w + 1] + 2 * Ln[i + 1] + Ln[i + w + 1]) - (Ln[i - w - 1] + 2 * Ln[i - 1] + Ln[i + w - 1]);
+    const gy = (Ln[i + w - 1] + 2 * Ln[i + w] + Ln[i + w + 1]) - (Ln[i - w - 1] + 2 * Ln[i - w] + Ln[i - w + 1]);
+    mag[i] = Math.hypot(gx, gy);
+    const a = (Math.atan2(gy, gx) + Math.PI) % Math.PI;
+    dir[i] = a < Math.PI / 8 || a >= 7 * Math.PI / 8 ? 0 : a < 3 * Math.PI / 8 ? 1 : a < 5 * Math.PI / 8 ? 2 : 3;
+  }
+  const mh = new Int32Array(1001); let mc = 0;
+  for (let i = 0; i < N; i++) if (mask[i] && mag[i] > 0.01){ mh[Math.min(1000, Math.round(mag[i] * 250))]++; mc++; }
+  let ref = 1; acc = 0;
+  for (let v = 1000; v >= 0; v--){ acc += mh[v]; if (acc >= mc * 0.04){ ref = Math.max(0.05, v / 250); break; } }
+  const edge = new Float32Array(N);
+  const off = [[1, 0], [1, 1], [0, 1], [-1, 1]];
+  for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++){
+    const i = y * w + x, v = mag[i]; if (!v) continue;
+    const [ox, oy] = off[dir[i]];
+    if (v >= mag[i + oy * w + ox] && v >= mag[i - oy * w - ox]) edge[i] = v / ref;
+  }
+
+  return { w, h, N, mask, area, labels, regions, Ln, edge, rgba:d, hasAlpha, bx0, by0, bw, bh, fx, fy, fw, fh, sc, OW, OH, outLabel:null, D:null };
+}
+
+/* Upsample part labels to render size, then measure every pixel's distance to its part's edge. */
+function buildOutLabel(){
+  const { w, h, labels, fx, fy, sc, OW, OH } = A;
+  const out = new Int32Array(OW * OH);
+  const get = (x, y) => x < 0 || y < 0 || x >= w || y >= h ? -1 : labels[y * w + x];
+  for (let oy = 0; oy < OH; oy++){
+    const wy = fy + (oy + 0.5) / sc - 0.5, y0 = Math.floor(wy), ty = wy - y0;
+    for (let ox = 0; ox < OW; ox++){
+      const wx = fx + (ox + 0.5) / sc - 0.5, x0 = Math.floor(wx), tx = wx - x0;
+      const l00 = get(x0, y0), l10 = get(x0 + 1, y0), l01 = get(x0, y0 + 1), l11 = get(x0 + 1, y0 + 1);
+      let best = l00;
+      if (!(l00 === l10 && l00 === l01 && l00 === l11)){
+        const ls = [l00, l10, l01, l11], ws = [(1 - tx) * (1 - ty), tx * (1 - ty), (1 - tx) * ty, tx * ty];
+        let bw = -1;
+        for (let a = 0; a < 4; a++){ let s = 0; for (let b = 0; b < 4; b++) if (ls[b] === ls[a]) s += ws[b]; if (s > bw){ bw = s; best = ls[a]; } }
+      }
+      out[oy * OW + ox] = best;
+    }
+  }
+  const edgeSeed = new Uint8Array(OW * OH);
+  for (let y = 0; y < OH; y++) for (let x = 0; x < OW; x++){
+    const i = y * OW + x, l = out[i];
+    if ((x < OW - 1 && out[i + 1] !== l) || (y < OH - 1 && out[i + OW] !== l) || (x > 0 && out[i - 1] !== l) || (y > 0 && out[i - OW] !== l)) edgeSeed[i] = 1;
+  }
+  A.outLabel = out;
+  A.D = edt(edgeSeed, OW, OH);
+  boxBlur(A.D, OW, OH, 3, 2);   // rounds off pixel steps so rims and contour lines run smooth
+}
+
+function boxBlur(F, W, H, r, passes){
+  const t = new Float32Array(Math.max(W, H)), n = 2 * r + 1;
+  for (let p = 0; p < passes; p++){
+    for (let y = 0; y < H; y++){
+      const o = y * W; let s = 0;
+      for (let k = -r; k <= r; k++) s += F[o + clamp(k, 0, W - 1)];
+      for (let x = 0; x < W; x++){ t[x] = s / n; s += F[o + Math.min(W - 1, x + r + 1)] - F[o + Math.max(0, x - r)]; }
+      for (let x = 0; x < W; x++) F[o + x] = t[x];
+    }
+    for (let x = 0; x < W; x++){
+      let s = 0;
+      for (let k = -r; k <= r; k++) s += F[clamp(k, 0, H - 1) * W + x];
+      for (let y = 0; y < H; y++){ t[y] = s / n; s += F[Math.min(H - 1, y + r + 1) * W + x] - F[Math.max(0, y - r) * W + x]; }
+      for (let y = 0; y < H; y++) F[y * W + x] = t[y];
+    }
+  }
+}
+
+/* ---------- step 3: patterns ---------- */
+function bucketOf(t){
+  t -= P.tone * 0.22;
+  return t < 0.14 ? 'solid' : t < 0.3 ? 'dark' : t < 0.48 ? 'deep' : t < 0.67 ? 'mid' : t < 0.85 ? 'light' : 'blank';
+}
+
+function assignPatterns(){
+  const regs = A.regions.slice().sort((p, q) => q.area - p.area);
+  const chosen = new Map();
+  for (const r of regs){
+    if (override.has(r.id)){ chosen.set(r.id, override.get(r.id)); continue; }
+    const set = SETS[bucketOf(r.tone)];
+    const start = hash(seed, r.id) % set.length;
+    let pick = set[start];
+    for (let k = 0; k < set.length; k++){
+      const cand = set[(start + k) % set.length];
+      let clash = false;
+      for (const [o, n] of r.nb){ if (n > 3 && chosen.get(o) === cand && cand !== 'solid' && cand !== 'none'){ clash = true; break; } }
+      if (!clash){ pick = cand; break; }
+    }
+    chosen.set(r.id, pick);
+  }
+  for (const r of A.regions) r.pattern = chosen.get(r.id);
+}
+
+function wobbler(s, rnd){
+  const amp = s * 0.06;
+  return (x, x1, y1, x2, y2) => {
+    const L = Math.hypot(x2 - x1, y2 - y1) || 1, n = Math.max(2, Math.ceil(L / (s * 0.6)));
+    const nx = -(y2 - y1) / L, ny = (x2 - x1) / L, p1 = rnd() * TAU, p2 = rnd() * TAU, f1 = TAU / (s * 3.1), f2 = TAU / (s * 1.7);
+    for (let k = 0; k <= n; k++){
+      const t = k / n, dd = t * L, o = amp * (Math.sin(dd * f1 + p1) * 0.7 + Math.sin(dd * f2 + p2) * 0.3);
+      const px = x1 + (x2 - x1) * t + nx * o, py = y1 + (y2 - y1) * t + ny * o;
+      k ? x.lineTo(px, py) : x.moveTo(px, py);
+    }
+  };
+}
+function rows(x, R, gap, W){ x.beginPath(); for (let y = -R; y <= R; y += gap) W(x, -R, y, R, y); x.stroke(); }
+function dotGrid(x, R, g, r){
+  x.beginPath();
+  for (let j = 0, y = -R; y <= R; j++, y += g * 0.87){ for (let xx = -R + (j & 1 ? g / 2 : 0); xx <= R; xx += g){ x.moveTo(xx + r, y); x.arc(xx, y, r, 0, TAU); } }
+  x.fill();
+}
+function ringGrid(x, R, g, r, center){
+  x.beginPath();
+  for (let j = 0, y = -R; y <= R; j++, y += g * 0.87){ for (let xx = -R + (j & 1 ? g / 2 : 0); xx <= R; xx += g){ x.moveTo(xx + r, y); x.arc(xx, y, r, 0, TAU); } }
+  x.stroke();
+  if (center) dotGrid(x, R, g, r * 0.24);
+}
+function zig(x, x0, x1, yTop, yBot, period){
+  x.moveTo(x0, yBot);
+  for (let xx = x0, k = 0; xx <= x1 + period; xx += period / 2, k++) x.lineTo(xx, k & 1 ? yTop : yBot);
+}
+function band(x, kind, R, top, bot, s){
+  const hh = bot - top, mid = (top + bot) / 2;
+  switch (kind){
+    case 0: { const g = s * 0.62, r = Math.min(s * 0.15, hh * 0.18); x.beginPath(); for (let xx = -R; xx <= R; xx += g){ x.moveTo(xx + r, mid); x.arc(xx, mid, r, 0, TAU); } x.fill(); break; }
+    case 1: { const rr = hh * 0.42; x.beginPath(); for (let xx = -R; xx <= R; xx += rr * 2){ x.moveTo(xx + rr, top); x.arc(xx, top, rr, 0, Math.PI); } x.stroke();
+      x.beginPath(); const r = rr * 0.18; for (let xx = -R; xx <= R; xx += rr * 2){ x.moveTo(xx + r, top + rr * 0.48); x.arc(xx, top + rr * 0.48, r, 0, TAU); } x.fill(); break; }
+    case 2: { x.beginPath(); for (let xx = -R; xx <= R; xx += s * 0.36){ x.moveTo(xx, top + hh * 0.18); x.lineTo(xx, bot - hh * 0.18); } x.stroke(); break; }
+    case 3: { const r = hh * 0.3, g = hh * 0.82; x.beginPath(); for (let xx = -R; xx <= R; xx += g){ x.moveTo(xx + r, mid); x.arc(xx, mid, r, 0, TAU); } x.stroke();
+      x.beginPath(); for (let xx = -R; xx <= R; xx += g){ x.moveTo(xx + r * 0.3, mid); x.arc(xx, mid, r * 0.3, 0, TAU); } x.fill(); break; }
+    case 4: { x.beginPath(); zig(x, -R, R, top + hh * 0.2, bot - hh * 0.2, hh * 0.75); x.stroke(); break; }
+    case 5: { const b = hh * 0.62; x.beginPath(); for (let xx = -R; xx <= R; xx += b){ x.moveTo(xx - b * 0.4, bot - hh * 0.12); x.lineTo(xx, top + hh * 0.2); x.lineTo(xx + b * 0.4, bot - hh * 0.12); x.closePath(); } x.fill(); break; }
+    case 6: { const g = hh * 0.62; x.beginPath(); let k = 0; for (let xx = -R; xx <= R; xx += g, k++){ x.moveTo(xx + hh * 0.3, mid); x.ellipse(xx, mid, hh * 0.3, hh * 0.13, k & 1 ? 0.6 : -0.6, 0, TAU); } x.stroke(); break; }
+  }
+}
+function bands(x, R, s, rnd, W){
+  const Hb = s * 2.5; let kind = (rnd() * 7) | 0;
+  for (let y0 = -R; y0 < R; y0 += Hb, kind = (kind + 1) % 7){
+    x.beginPath(); W(x, -R, y0, R, y0); W(x, -R, y0 + s * 0.24, R, y0 + s * 0.24); x.stroke();
+    band(x, kind, R, y0 + s * 0.24, y0 + Hb, s);
+  }
+}
+
+function drawPattern(x, name, R, s, pw, rnd){
+  const W = wobbler(s, rnd);
+  x.lineWidth = pw; x.lineCap = 'round'; x.lineJoin = 'round'; x.fillStyle = x.strokeStyle = '#000';
+  const knock = () => { x.fillRect(-R, -R, 2 * R, 2 * R); x.globalCompositeOperation = 'destination-out'; };
+  switch (name){
+    case 'stripes': rows(x, R, s * 0.9, W); break;
+    case 'hatch': rows(x, R, s * 0.5, W); break;
+    case 'sparse': rows(x, R, s * 1.7, W); break;
+    case 'crosshatch': x.rotate(Math.PI / 4); rows(x, R, s * 0.75, W); x.rotate(-Math.PI / 2); rows(x, R, s * 0.75, W); break;
+    case 'dots': dotGrid(x, R, s * 1.1, s * 0.15); break;
+    case 'tinyCircles': ringGrid(x, R, s * 1.2, s * 0.28, false); break;
+    case 'circles': ringGrid(x, R, s * 1.35, s * 0.52, true); break;
+    case 'scallops': {
+      const rr = s * 0.5;
+      for (let y = -R; y <= R; y += s * 0.95){
+        x.beginPath(); W(x, -R, y, R, y); for (let xx = -R; xx <= R; xx += rr * 2){ x.moveTo(xx + rr, y); x.arc(xx, y, rr, 0, Math.PI); } x.stroke();
+        x.beginPath(); for (let xx = -R; xx <= R; xx += rr * 2){ x.moveTo(xx + s * 0.09, y + rr * 0.45); x.arc(xx, y + rr * 0.45, s * 0.09, 0, TAU); } x.fill();
+      }
+      break;
+    }
+    case 'scales': {
+      const g = s * 1.1, rr = s * 0.6;
+      for (let j = 0, y = -R - rr; y <= R + rr; j++, y += s * 0.5){
+        for (let xx = -R - g + (j & 1 ? g / 2 : 0); xx <= R + g; xx += g){
+          x.beginPath(); x.moveTo(xx + rr, y); x.arc(xx, y, rr, 0, Math.PI); x.closePath();
+          x.globalCompositeOperation = 'destination-out'; x.fill(); x.globalCompositeOperation = 'source-over';
+          x.beginPath(); x.moveTo(xx + rr, y); x.arc(xx, y, rr, 0, Math.PI); x.stroke();
+        }
+      }
+      break;
+    }
+    case 'leaves': { for (let y = -R; y <= R; y += s * 1.15) band(x, 6, R, y, y + s * 1.15, s); break; }
+    case 'zigzag': { x.beginPath(); for (let y = -R; y <= R; y += s * 0.9) zig(x, -R, R, y - s * 0.26, y + s * 0.26, s * 1.0); x.stroke(); break; }
+    case 'waves': { x.beginPath(); for (let y = -R; y <= R; y += s * 0.8){ for (let xx = -R; xx <= R; xx += s * 0.2){ const yy = y + Math.sin(xx / s * Math.PI) * s * 0.22; xx === -R ? x.moveTo(xx, yy) : x.lineTo(xx, yy); } } x.stroke(); break; }
+    case 'triangles': { for (let y = -R; y <= R; y += s * 1.35){ x.beginPath(); W(x, -R, y, R, y); x.stroke(); x.beginPath(); for (let xx = -R; xx <= R; xx += s * 0.9){ x.moveTo(xx - s * 0.32, y); x.lineTo(xx, y - s * 0.62); x.lineTo(xx + s * 0.32, y); x.closePath(); } x.fill(); } break; }
+    case 'ticks': { x.beginPath(); for (let y = -R; y <= R; y += s * 1.2){ W(x, -R, y, R, y); for (let xx = -R; xx <= R; xx += s * 0.42){ x.moveTo(xx, y); x.lineTo(xx, y - s * 0.5); } } x.stroke(); break; }
+    case 'concentric': { x.beginPath(); for (let r = s * 0.9; r < R * 1.5; r += s * 0.9){ x.moveTo(r, 0); x.arc(0, 0, r, 0, TAU); } x.stroke(); x.beginPath(); x.arc(0, 0, s * 0.35, 0, TAU); x.fill(); break; }
+    case 'bands': bands(x, R, s, rnd, W); break;
+    case 'revBands': knock(); x.lineWidth = pw * 1.3; bands(x, R, s, rnd, W); break;
+    case 'revDots': knock(); dotGrid(x, R, s * 1.1, s * 0.19); break;
+    case 'revStripes': knock(); x.lineWidth = s * 0.22; rows(x, R, s * 0.95, W); break;
+  }
+  x.globalCompositeOperation = 'source-over';
+}
+
+function blur121(F, w, h, passes){
+  const t = new Float32Array(F.length);
+  for (let p = 0; p < passes; p++){
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++){ const i = y * w + x; t[i] = (F[x > 0 ? i - 1 : i] + 2 * F[i] + F[x < w - 1 ? i + 1 : i]) / 4; }
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++){ const i = y * w + x; F[i] = (t[y > 0 ? i - w : i] + 2 * t[i] + t[y < h - 1 ? i + w : i]) / 4; }
+  }
+}
+
+function buildInk(){
+  const { w, h, N, mask, labels, regions, fx, fy, sc, OW, OH, outLabel, edge, D } = A;
+  const ink = new Float32Array(OW * OH);
+  assignPatterns();
+
+  const s = OUT * 0.0088 / P.density;
+  const pw = Math.max(1, s * 0.09) * (0.75 + 0.12 * P.line);
+  const hw = pw * 0.5;
+  const line = d => 1 - smooth(hw - 0.6, hw + 0.6, d);
+  const fat = d => 1 - smooth(hw * 1.7 - 0.6, hw * 1.7 + 0.6, d);
+  const gap = s * 0.95, rimAt = s * 0.46, echoGap = s * 0.72;
+  const tmp = mk(4, 4), tx = tmp.getContext('2d', { willReadFrequently:true });
+
+  for (const r of regions){
+    const pat = r.pattern;
+    const rim = P.rim && r.area > A.area * 0.004;
+    const ox0 = clamp(Math.floor((r.x0 + 0.5 - fx) * sc - 0.5) - 3, 0, OW - 1), oy0 = clamp(Math.floor((r.y0 + 0.5 - fy) * sc - 0.5) - 3, 0, OH - 1);
+    const ox1 = clamp(Math.ceil((r.x1 + 1.5 - fx) * sc - 0.5) + 3, 0, OW), oy1 = clamp(Math.ceil((r.y1 + 1.5 - fy) * sc - 0.5) + 3, 0, OH);
+    const bw = ox1 - ox0, bh = oy1 - oy0; if (bw < 2 || bh < 2) continue;
+
+    let px = null;
+    if (!PIXEL_PATTERNS.has(pat)){
+      tmp.width = bw; tmp.height = bh;
+      const cx = (r.cx + 0.5 - fx) * sc - 0.5 - ox0, cy = (r.cy + 0.5 - fy) * sc - 0.5 - oy0;
+      const Rr = Math.max(Math.hypot(cx, cy), Math.hypot(bw - cx, cy), Math.hypot(cx, bh - cy), Math.hypot(bw - cx, bh - cy)) + s;
+      tx.setTransform(1, 0, 0, 1, cx, cy); tx.rotate(r.angle);
+      drawPattern(tx, pat, Rr, s, pw, rng(hash(seed, r.id + 101)));
+      tx.setTransform(1, 0, 0, 1, 0, 0);
+      px = tx.getImageData(0, 0, bw, bh).data;
+    }
+
+    for (let yy = 0; yy < bh; yy++){
+      const row = (oy0 + yy) * OW + ox0;
+      for (let xx = 0; xx < bw; xx++){
+        const o = row + xx; if (outLabel[o] !== r.id) continue;
+        const dd = D[o];
+        let a;
+        if (pat === 'solid'){
+          a = rim ? 1 - fat(Math.abs(dd - s * 0.62)) : 1;
+        } else if (pat === 'echoRev'){
+          const t = dd % echoGap; a = 1 - fat(Math.min(t, echoGap - t));
+        } else {
+          let p = 0;
+          if (pat === 'echo'){ if (dd > gap * 0.6){ const t = (dd - gap * 0.6) % echoGap; p = line(Math.min(t, echoGap - t)); } }
+          else if (px) p = px[(yy * bw + xx) * 4 + 3] / 255;
+          p *= smooth(gap - 0.8, gap + 0.8, dd);
+          if (rim) p = Math.max(p, line(Math.abs(dd - rimAt)));
+          a = p;
+        }
+        if (a > ink[o]) ink[o] = a;
+      }
+    }
+  }
+
+  // outlines: silhouette (thicker) and part borders, plus optional inner detail
+  const Fo = new Float32Array(N), Fi = new Float32Array(N), Fd = new Float32Array(N);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++){
+    const i = y * w + x; if (!mask[i]) continue;
+    if (x === 0 || y === 0 || x === w - 1 || y === h - 1 || !mask[i - 1] || !mask[i + 1] || !mask[i - w] || !mask[i + w]) Fo[i] = 1;
+    else if (labels[i + 1] !== labels[i] || labels[i + w] !== labels[i]) Fi[i] = 1;
+  }
+  if (P.detail > 0){
+    const thr = 1.55 - 1.15 * P.detail;
+    for (let y = 2; y < h - 2; y++) for (let x = 2; x < w - 2; x++){
+      const i = y * w + x; if (edge[i] < thr || Fo[i]) continue;
+      let near = false, friend = false;
+      for (let dy = -2; dy <= 2 && !near; dy++) for (let dx = -2; dx <= 2; dx++){ if (!mask[i + dy * w + dx]){ near = true; break; } }
+      if (near) continue;
+      for (let dy = -1; dy <= 1 && !friend; dy++) for (let dx = -1; dx <= 1; dx++){ if ((dx || dy) && edge[i + dy * w + dx] >= thr){ friend = true; break; } }
+      if (friend) Fd[i] = 1;
+    }
+  }
+  blur121(Fo, w, h, 2); blur121(Fi, w, h, 2); blur121(Fd, w, h, 2);
+  const thI = [0.36, 0.31, 0.27, 0.23, 0.19, 0.16, 0.13][Math.round((P.line - 1) * 2)];
+  const thO = thI * 0.7, thD = thI * 1.15, e = 0.035;
+  for (let oy = 0; oy < OH; oy++){
+    const wy = fy + (oy + 0.5) / sc - 0.5, y0 = Math.floor(wy), ty = wy - y0;
+    if (y0 < 0 || y0 >= h - 1) continue;
+    for (let ox = 0; ox < OW; ox++){
+      const wx = fx + (ox + 0.5) / sc - 0.5, x0 = Math.floor(wx), tx2 = wx - x0;
+      if (x0 < 0 || x0 >= w - 1) continue;
+      const i = y0 * w + x0;
+      const bil = F => (F[i] * (1 - tx2) + F[i + 1] * tx2) * (1 - ty) + (F[i + w] * (1 - tx2) + F[i + w + 1] * tx2) * ty;
+      const v = Math.max(smooth(thO - e, thO + e, bil(Fo)), smooth(thI - e, thI + e, bil(Fi)), P.detail > 0 ? smooth(thD - e, thD + e, bil(Fd)) * 0.92 : 0);
+      const o = oy * OW + ox; if (v > ink[o]) ink[o] = v;
+    }
+  }
+  INK = ink;
+}
+
+/* ---------- step 4: red, ink and paper ---------- */
+function noiseLayer(W, H, cell, rnd, out, amp){
+  const gw = Math.ceil(W / cell) + 2, gh = Math.ceil(H / cell) + 2, g = new Float32Array(gw * gh);
+  for (let i = 0; i < g.length; i++) g[i] = rnd();
+  for (let y = 0; y < H; y++){
+    const fy = y / cell, iy = fy | 0, ty = fy - iy, sy = ty * ty * (3 - 2 * ty);
+    for (let x = 0; x < W; x++){
+      const fx = x / cell, ix = fx | 0, tx = fx - ix, sx = tx * tx * (3 - 2 * tx), k = iy * gw + ix;
+      const a = g[k] + (g[k + 1] - g[k]) * sx, b = g[k + gw] + (g[k + gw + 1] - g[k + gw]) * sx;
+      out[y * W + x] += (a + (b - a) * sy) * amp;
+    }
+  }
+}
+function paperTex(W, H){
+  if (texCache && texCache.W === W && texCache.H === H) return texCache;
+  const rnd = rng(99), Nn = W * H, k = OUT / 1400;
+  const ht = new Float32Array(Nn), lo = new Float32Array(Nn);
+  noiseLayer(W, H, 30 * k, rnd, ht, 1); noiseLayer(W, H, 15 * k, rnd, ht, 0.6); noiseLayer(W, H, 7 * k, rnd, ht, 0.38); noiseLayer(W, H, 3.5 * k, rnd, ht, 0.22);
+  noiseLayer(W, H, 140 * k, rnd, lo, 1); noiseLayer(W, H, 55 * k, rnd, lo, 0.5);
+  const bump = new Float32Array(Nn), spk = new Float32Array(Nn);
+  for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++){ const i = y * W + x; bump[i] = (ht[i - W - 1] - ht[i + W + 1]) * 0.5; }
+  for (let i = 0; i < Nn; i++){ spk[i] = rnd(); lo[i] = lo[i] / 1.5; ht[i] = ht[i] / 2.2; }
+  // sheets age and catch light at the edges: darken a narrow border slightly
+  const edge = new Float32Array(Nn), band = 56 * k;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++){
+    const d = Math.min(x, y, W - 1 - x, H - 1 - y);
+    edge[y * W + x] = d < band ? 1 - 0.05 * (1 - d / band) ** 2 * (0.7 + 0.6 * lo[y * W + x]) : 1;
+  }
+  texCache = { W, H, bump, lo, ht, spk, edge };
+  return texCache;
+}
+
+function discGeom(){
+  const { bx0, by0, bw, bh, fx, fy, sc } = A;
+  const wx = bx0 + disc.u * bw, wy = by0 + disc.v * bh;
+  return { x:(wx + 0.5 - fx) * sc - 0.5, y:(wy + 0.5 - fy) * sc - 0.5, r:P.discSize * Math.max(bw, bh) * sc };
+}
+
+function compose(paper){
+  const { OW, OH, outLabel, regions } = A;
+  const tex = paperTex(OW, OH);
+  const img = new ImageData(OW, OH), o = img.data;
+  const pc = PAPERS[paper] || null, ink = INKS[P.ink];
+  const redBy = new Uint8Array(regions.length + 1);
+  for (const id of red) if (id < regions.length) redBy[id] = 1;
+  const Dg = discGeom(), g = P.grain;
+  for (let y = 0; y < OH; y++) for (let x = 0; x < OW; x++){
+    const i = y * OW + x;
+    const shade = (1 + tex.bump[i] * 1.35 * g + (tex.spk[i] - 0.5) * 0.035 * g) * tex.edge[i];
+    let rc = 0;
+    if (P.disc){ const dx = x - Dg.x, dy = y - Dg.y, d2 = dx * dx + dy * dy; if (d2 < (Dg.r + 3) * (Dg.r + 3)) rc = clamp(Dg.r + (tex.lo[i] - 0.5) * 3 - Math.sqrt(d2) + 0.5, 0, 1); }
+    const l = outLabel[i]; if (l >= 0 && redBy[l]) rc = 1;
+    if (rc) rc *= 0.84 + 0.16 * tex.lo[i] - g * 0.1 * Math.max(0, tex.ht[i] - 0.55);
+    rc = clamp(rc, 0, 1);
+    const ic = INK[i] * (0.9 + 0.1 * tex.spk[i]) * (1 - g * 0.12 * Math.max(0, tex.ht[i] - 0.6));
+    const p = i * 4;
+    if (pc){
+      const rs = 1 + (shade - 1) * 0.7;
+      let r = pc[0] * shade, gg = pc[1] * shade, b = pc[2] * shade;
+      r += (RED[0] * rs - r) * rc; gg += (RED[1] * rs - gg) * rc; b += (RED[2] * rs - b) * rc;
+      r += (ink[0] - r) * ic; gg += (ink[1] - gg) * ic; b += (ink[2] - b) * ic;
+      o[p] = r; o[p + 1] = gg; o[p + 2] = b; o[p + 3] = 255;
+    } else {
+      const a = 1 - (1 - rc) * (1 - ic);
+      if (a > 0){
+        const wr = rc * (1 - ic) / a, wi = ic / a;
+        o[p] = RED[0] * wr + ink[0] * wi; o[p + 1] = RED[1] * wr + ink[1] * wi; o[p + 2] = RED[2] * wr + ink[2] * wi; o[p + 3] = a * 255;
+      }
+    }
+  }
+  return img;
+}
+
+/* ---------- SVG export: trace coverage maps into vector outlines ---------- */
+function simplifyKeep(xs, ys, tol){
+  const n = xs.length, keep = new Uint8Array(n), st = [0, n - 1], t2 = tol * tol;
+  keep[0] = keep[n - 1] = 1;
+  while (st.length){
+    const b = st.pop(), a = st.pop();
+    const dx = xs[b] - xs[a], dy = ys[b] - ys[a], L2 = dx * dx + dy * dy || 1e-9;
+    let md = 0, mi = -1;
+    for (let i = a + 1; i < b; i++){
+      let t = ((xs[i] - xs[a]) * dx + (ys[i] - ys[a]) * dy) / L2; t = t < 0 ? 0 : t > 1 ? 1 : t;
+      const ex = xs[a] + t * dx - xs[i], ey = ys[a] + t * dy - ys[i], d = ex * ex + ey * ey;
+      if (d > md){ md = d; mi = i; }
+    }
+    if (md > t2){ keep[mi] = 1; st.push(a, mi, mi, b); }
+  }
+  return keep;
+}
+
+/* Marching squares over a 0–1 coverage map; returns one closed "M…Z" outline per loop. */
+function traceLoops(arr, W, H, iso, minArea, tol){
+  const CW = W + 2;
+  const val = (X, Y) => (X < 0 || Y < 0 || X >= W || Y >= H) ? 0 : arr[Y * W + X];
+  const hId = (X, Y) => ((Y + 1) * CW + X + 1) * 2, vId = (X, Y) => ((Y + 1) * CW + X + 1) * 2 + 1;
+  const slots = new Int32Array(CW * (H + 2) * 4).fill(-1);
+  const SA = [], SB = [];
+  const add = (e1, e2) => { const s = SA.length; SA.push(e1); SB.push(e2); slots[e1 * 2 + (slots[e1 * 2] < 0 ? 0 : 1)] = s; slots[e2 * 2 + (slots[e2 * 2] < 0 ? 0 : 1)] = s; };
+  for (let Y = -1; Y < H; Y++) for (let X = -1; X < W; X++){
+    const c = (val(X, Y) >= iso ? 8 : 0) | (val(X + 1, Y) >= iso ? 4 : 0) | (val(X + 1, Y + 1) >= iso ? 2 : 0) | (val(X, Y + 1) >= iso ? 1 : 0);
+    if (c === 0 || c === 15) continue;
+    const T = hId(X, Y), R = vId(X + 1, Y), Bo = hId(X, Y + 1), L = vId(X, Y);
+    switch (c){
+      case 1: case 14: add(L, Bo); break;
+      case 2: case 13: add(Bo, R); break;
+      case 3: case 12: add(L, R); break;
+      case 4: case 11: add(T, R); break;
+      case 6: case 9: add(T, Bo); break;
+      case 7: case 8: add(L, T); break;
+      case 5: add(L, T); add(Bo, R); break;
+      case 10: add(T, R); add(L, Bo); break;
+    }
+  }
+  const px = e => { const k = e >> 1, X = (k % CW) - 1, Y = ((k / CW) | 0) - 1; if (e & 1) return X + 0.5; const a = val(X, Y); return X + (iso - a) / (val(X + 1, Y) - a) + 0.5; };
+  const py = e => { const k = e >> 1, X = (k % CW) - 1, Y = ((k / CW) | 0) - 1; if (!(e & 1)) return Y + 0.5; const a = val(X, Y); return Y + (iso - a) / (val(X, Y + 1) - a) + 0.5; };
+  const r1 = v => Math.round(v * 10) / 10;
+  const used = new Uint8Array(SA.length), out = [];
+  for (let s0 = 0; s0 < SA.length; s0++){
+    if (used[s0]) continue; used[s0] = 1;
+    const start = SA[s0]; let cur = SB[s0], s = s0;
+    const ids = [start, cur];
+    while (cur !== start){
+      let n = slots[cur * 2]; if (n === s) n = slots[cur * 2 + 1];
+      if (n < 0 || used[n]) break;
+      used[n] = 1; s = n; cur = SA[n] === cur ? SB[n] : SA[n]; ids.push(cur);
+    }
+    if (ids.length < 4) continue;
+    const xs = ids.map(px), ys = ids.map(py);
+    let area = 0; for (let i = 0; i < xs.length - 1; i++) area += xs[i] * ys[i + 1] - xs[i + 1] * ys[i];
+    if (Math.abs(area) / 2 < minArea) continue;
+    const keep = simplifyKeep(xs, ys, tol);
+    let d = '', first = true;
+    for (let i = 0; i < xs.length - 1; i++){ if (!keep[i]) continue; d += (first ? 'M' : ' ') + r1(xs[i]) + ' ' + r1(ys[i]); first = false; }
+    out.push(d + 'Z');
+  }
+  return out;
+}
+
+function hex(c){ return '#' + c.map(v => Math.round(v).toString(16).padStart(2, '0')).join(''); }
+
+function paperImage(paper){
+  const { OW, OH } = A, tex = paperTex(OW, OH), pc = PAPERS[paper], g = P.grain;
+  const img = new ImageData(OW, OH), o = img.data;
+  for (let i = 0; i < OW * OH; i++){
+    const shade = (1 + tex.bump[i] * 1.35 * g + (tex.spk[i] - 0.5) * 0.035 * g) * tex.edge[i], p = i * 4;
+    o[p] = pc[0] * shade; o[p + 1] = pc[1] * shade; o[p + 2] = pc[2] * shade; o[p + 3] = 255;
+  }
+  return img;
+}
+
+/* Layers: paper (texture image), red (circle + red parts), ink (patterns and lines). */
+function buildSvg(paper){
+  const { OW, OH, outLabel, regions } = A;
+  const paths = loops => { let s = ''; for (let i = 0; i < loops.length; i += 1500) s += `<path fill-rule="evenodd" d="${loops.slice(i, i + 1500).join('')}"/>`; return s; };
+  const parts = [`<svg xmlns="http://www.w3.org/2000/svg" width="${OW}" height="${OH}" viewBox="0 0 ${OW} ${OH}">\n`];
+  if (PAPERS[paper]){
+    const c = mk(OW, OH); c.getContext('2d').putImageData(paperImage(paper), 0, 0);
+    parts.push(`<g id="paper"><image width="${OW}" height="${OH}" href="${c.toDataURL('image/jpeg', 0.88)}"/></g>\n`);
+  }
+  let redLoops = [];
+  if (red.size){
+    const redBy = new Uint8Array(regions.length + 1); for (const id of red) if (id < regions.length) redBy[id] = 1;
+    const m = new Float32Array(OW * OH); for (let i = 0; i < m.length; i++){ const l = outLabel[i]; if (l >= 0 && redBy[l]) m[i] = 1; }
+    redLoops = traceLoops(m, OW, OH, 0.5, 4, 0.6);
+  }
+  const Dg = discGeom(), r1 = v => Math.round(v * 10) / 10;
+  parts.push(`<g id="red" fill="${hex(RED)}">${P.disc ? `<circle cx="${r1(Dg.x)}" cy="${r1(Dg.y)}" r="${r1(Dg.r)}"/>` : ''}${paths(redLoops)}</g>\n`);
+  parts.push(`<g id="ink" fill="${hex(INKS[P.ink])}">${paths(traceLoops(INK, OW, OH, 0.5, 0.6, 0.3))}</g>\n</svg>\n`);
+  return new Blob(parts, { type:'image/svg+xml' });
+}
+
+/* ---------- rendering & thumbnails ---------- */
+function fitThumb(c, w, h){ const k = 320 / Math.max(w, h); c.width = Math.max(1, Math.round(w * k)); c.height = Math.max(1, Math.round(h * k)); return c.getContext('2d'); }
+function hsl(hh, s, l){ s /= 100; l /= 100; const k = n => (n + hh / 30) % 12, a = s * Math.min(l, 1 - l); const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1))); return [f(0) * 255, f(8) * 255, f(4) * 255]; }
+
+function thumbCutout(){
+  const { w, h, N, mask, rgba } = A;
+  const t1 = $('t1'), x1 = fitThumb(t1, w, h);
+  const im = new ImageData(w, h);
+  for (let i = 0; i < N; i++){ im.data[i * 4] = rgba[i * 4]; im.data[i * 4 + 1] = rgba[i * 4 + 1]; im.data[i * 4 + 2] = rgba[i * 4 + 2]; im.data[i * 4 + 3] = mask[i] ? 255 : 0; }
+  const c = mk(w, h); c.getContext('2d').putImageData(im, 0, 0); x1.imageSmoothingQuality = 'high'; x1.drawImage(c, 0, 0, t1.width, t1.height);
+}
+function thumbParts(){
+  const { w, h, N, labels, regions } = A;
+  const t2 = $('t2'), x2 = fitThumb(t2, w, h);
+  const im = new ImageData(w, h), cols = regions.map(r => red.has(r.id) ? RED : hsl((r.id * 137.5) % 360, 22, 22 + r.tone * 62));
+  for (let i = 0; i < N; i++){ const l = labels[i], p = i * 4; if (l < 0) continue; const c = cols[l]; im.data[p] = c[0]; im.data[p + 1] = c[1]; im.data[p + 2] = c[2]; im.data[p + 3] = 255; }
+  const c = mk(w, h); c.getContext('2d').putImageData(im, 0, 0); x2.imageSmoothingEnabled = false; x2.drawImage(c, 0, 0, t2.width, t2.height);
+}
+function thumbInk(){
+  const { OW, OH } = A;
+  const t3 = $('t3'), x3 = fitThumb(t3, OW, OH);
+  const im = new ImageData(OW, OH);
+  for (let i = 0; i < OW * OH; i++){ const v = 255 - INK[i] * 235; im.data[i * 4] = v; im.data[i * 4 + 1] = v; im.data[i * 4 + 2] = v - 4; im.data[i * 4 + 3] = 255; }
+  const c = mk(OW, OH); c.getContext('2d').putImageData(im, 0, 0); x3.imageSmoothingQuality = 'high'; x3.drawImage(c, 0, 0, t3.width, t3.height);
+}
+function thumbFinal(){
+  const t4 = $('t4'), x4 = fitThumb(t4, A.OW, A.OH);
+  x4.clearRect(0, 0, t4.width, t4.height); x4.imageSmoothingQuality = 'high'; x4.drawImage(mainC, 0, 0, t4.width, t4.height);
+  t4.parentNode.classList.toggle('clear', P.paper === 'none');
+}
+
+/* Size the artwork to fill the stage while keeping its proportions. */
+function fitCanvas(){
+  if (!A) return;
+  const st = $('stage'), pad = clamp(Math.min(st.clientWidth, st.clientHeight) * 0.09, 20, 64);
+  const k = Math.min((st.clientWidth - pad * 2) / A.OW, (st.clientHeight - pad * 2) / A.OH);
+  if (!(k > 0)) return;
+  mainC.style.width = Math.floor(A.OW * k) + 'px'; mainC.style.height = Math.floor(A.OH * k) + 'px';
+}
+new ResizeObserver(fitCanvas).observe($('stage'));
+
+function paint(){
+  if (!A) return;
+  if (mainC.width !== A.OW || mainC.height !== A.OH){ mainC.width = overC.width = A.OW; mainC.height = overC.height = A.OH; hoverId = -2; fitCanvas(); }
+  mainC.getContext('2d').putImageData(compose(P.paper), 0, 0);
+  $('art').classList.toggle('clear', P.paper === 'none');
+  thumbFinal();
+}
+
+let busyN = 0;
+async function busy(fn){
+  busyN++; $('busy').hidden = false; await nextFrame();
+  try { fn(); } catch (err){ console.error(err); toast('Something went wrong while drawing. Try another image.'); }
+  if (--busyN === 0) $('busy').hidden = true;
+}
+
+function defaultRed(){
+  red = new Set();
+  let best = -1, ba = 0;
+  for (const r of A.regions){
+    const b = bucketOf(r.tone);
+    if ((b === 'deep' || b === 'mid' || b === 'light') && r.area > A.area * 0.03 && r.area < A.area * 0.35 && r.area > ba){ ba = r.area; best = r.id; }
+  }
+  if (best >= 0) red.add(best);
+}
+
+function fullRun(){
+  return busy(() => {
+    A = analyze(src.canvas); buildOutLabel(); override.clear(); defaultRed();
+    thumbCutout(); buildInk(); thumbParts(); thumbInk(); paint(); clearHover();
+  });
+}
+function inkRun(){ return busy(() => { if (!A) return; buildInk(); thumbParts(); thumbInk(); paint(); }); }
+
+/* ---------- sample image (drawn here, a stand-in for a product photo) ---------- */
+function drawSample(){
+  const c = mk(1000, 760), x = c.getContext('2d');
+  let g = x.createRadialGradient(500, 320, 40, 500, 380, 720); g.addColorStop(0, '#efeeea'); g.addColorStop(1, '#d2d1cc'); x.fillStyle = g; x.fillRect(0, 0, 1000, 760);
+  x.save(); x.translate(500, 640); x.scale(1, 0.12); g = x.createRadialGradient(0, 0, 10, 0, 0, 280); g.addColorStop(0, 'rgba(70,64,52,.35)'); g.addColorStop(1, 'rgba(70,64,52,0)'); x.fillStyle = g; x.beginPath(); x.arc(0, 0, 280, 0, TAU); x.fill(); x.restore();
+  x.lineCap = 'round'; x.strokeStyle = '#6f5b3d'; x.lineWidth = 30; x.beginPath(); x.moveTo(318, 395); x.bezierCurveTo(170, 340, 165, 590, 330, 545); x.stroke();
+  x.strokeStyle = '#b8a379'; x.lineWidth = 9; x.beginPath(); x.moveTo(316, 392); x.bezierCurveTo(180, 345, 175, 580, 328, 541); x.stroke();
+  g = x.createLinearGradient(680, 520, 860, 320); g.addColorStop(0, '#9c8961'); g.addColorStop(0.5, '#e4d4ac'); g.addColorStop(1, '#8a774f'); x.fillStyle = g;
+  x.beginPath(); x.moveTo(660, 515); x.quadraticCurveTo(770, 500, 812, 372); x.lineTo(848, 318); x.lineTo(872, 332); x.quadraticCurveTo(820, 450, 682, 438); x.closePath(); x.fill();
+  g = x.createLinearGradient(400, 0, 600, 0); g.addColorStop(0, '#2f261b'); g.addColorStop(0.45, '#6b5838'); g.addColorStop(1, '#2a2218'); x.fillStyle = g;
+  x.beginPath(); x.moveTo(410, 585); x.lineTo(590, 585); x.lineTo(618, 636); x.lineTo(382, 636); x.closePath(); x.fill();
+  x.save(); x.beginPath(); x.ellipse(500, 468, 212, 150, 0, 0, TAU); x.clip();
+  g = x.createRadialGradient(430, 400, 20, 500, 470, 260); g.addColorStop(0, '#f6efdc'); g.addColorStop(0.45, '#d5c398'); g.addColorStop(1, '#6f5f40'); x.fillStyle = g; x.fillRect(280, 310, 440, 320);
+  g = x.createLinearGradient(0, 470, 0, 520); g.addColorStop(0, '#5a4329'); g.addColorStop(1, '#3c2c1a'); x.fillStyle = g; x.fillRect(280, 474, 440, 44);
+  x.fillStyle = '#e6d39e'; for (let px = 300; px < 720; px += 30){ x.beginPath(); x.arc(px, 496, 6, 0, TAU); x.fill(); }
+  x.fillStyle = 'rgba(80,60,35,.55)'; x.fillRect(280, 560, 440, 80);
+  x.restore();
+  x.strokeStyle = '#7d6847'; x.lineWidth = 12; x.beginPath(); x.ellipse(500, 348, 122, 18, 0, 0, TAU); x.stroke();
+  g = x.createLinearGradient(390, 0, 610, 0); g.addColorStop(0, '#9b875f'); g.addColorStop(0.4, '#efe3c3'); g.addColorStop(1, '#8c7a54'); x.fillStyle = g;
+  x.beginPath(); x.ellipse(500, 342, 112, 70, 0, Math.PI, TAU); x.closePath(); x.fill();
+  x.fillStyle = '#6a553a'; x.fillRect(490, 262, 20, 16);
+  g = x.createRadialGradient(492, 250, 3, 500, 258, 26); g.addColorStop(0, '#a8916a'); g.addColorStop(1, '#3d3020'); x.fillStyle = g; x.beginPath(); x.arc(500, 256, 23, 0, TAU); x.fill();
+  return c;
+}
+
+/* ---------- input ---------- */
+function setSource(canvas, name){ src = { canvas, name }; $('fileInfo').textContent = `${name} · ${canvas.width} × ${canvas.height}`; disc.u = 0.64; disc.v = 0.3; fullRun(); }
+async function loadFile(file){
+  if (!file || !/^image\//.test(file.type)){ toast('That file is not an image. Choose a PNG, JPG or WebP.'); return; }
+  const url = URL.createObjectURL(file);
+  try {
+    const img = new Image(); img.src = url; await img.decode();
+    const k = Math.min(1, 2000 / Math.max(img.naturalWidth, img.naturalHeight));
+    const c = mk(Math.round(img.naturalWidth * k), Math.round(img.naturalHeight * k));
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    setSource(c, file.name || 'Pasted image');
+  } catch (err){ toast('That image could not be opened. Try saving it as a PNG first.'); }
+  finally { URL.revokeObjectURL(url); }
+}
+$('openBtn').onclick = () => $('file').click();
+$('file').onchange = e => { loadFile(e.target.files[0]); e.target.value = ''; };
+$('sampleBtn').onclick = () => setSource(drawSample(), 'Sample teapot');
+let dragDepth = 0;
+addEventListener('dragenter', e => { if (e.dataTransfer && [...e.dataTransfer.types].includes('Files')){ dragDepth++; document.body.classList.add('dragging'); } });
+addEventListener('dragleave', () => { if (--dragDepth <= 0){ dragDepth = 0; document.body.classList.remove('dragging'); } });
+addEventListener('dragover', e => e.preventDefault());
+addEventListener('drop', e => { e.preventDefault(); dragDepth = 0; document.body.classList.remove('dragging'); const f = e.dataTransfer.files[0]; if (f) loadFile(f); });
+addEventListener('paste', e => { const it = [...(e.clipboardData?.items || [])].find(i => i.type.startsWith('image/')); if (it) loadFile(it.getAsFile()); });
+
+/* ---------- controls ---------- */
+const fmt = { parts:v => v, merge:v => v.toFixed(1) + '%', density:v => v.toFixed(2) + '×', tone:v => (v > 0 ? '+' : '') + v.toFixed(2), line:v => v.toFixed(1), detail:v => Math.round(v * 100) + '%', discSize:v => Math.round(v * 100) + '%', grain:v => Math.round(v * 100) + '%' };
+const timers = {};
+const later = (key, fn, ms) => { clearTimeout(timers[key]); timers[key] = setTimeout(fn, ms); };
+let painting = false;
+const repaint = () => { if (painting) return; painting = true; requestAnimationFrame(() => { painting = false; paint(); }); };
+for (const id of Object.keys(fmt)){
+  const el = $(id), out = $(id + 'Out');
+  const show = () => { out.textContent = fmt[id](+el.value); el.style.setProperty('--p', ((el.value - el.min) / (el.max - el.min) * 100) + '%'); };
+  show();
+  el.addEventListener('input', () => {
+    P[id] = +el.value; show();
+    if (!src) return;
+    if (id === 'parts' || id === 'merge') later('a', fullRun, 260);
+    else if (id === 'discSize' || id === 'grain') repaint();
+    else later('i', inkRun, 140);
+  });
+}
+$('removeBg').onchange = e => { P.removeBg = e.target.checked; if (src) fullRun(); };
+$('rim').onchange = e => { P.rim = e.target.checked; inkRun(); };
+$('disc').onchange = e => { P.disc = e.target.checked; repaint(); };
+$('shuffle').onclick = () => { seed = (seed * 7919 + 13) % 100003; override.clear(); inkRun(); };
+$('clearRed').onclick = () => { red.clear(); thumbParts(); repaint(); };
+function pressGroup(btns, active){ for (const b of btns) b.setAttribute('aria-pressed', String(b === active)); }
+$('inkBlack').onclick = e => { P.ink = 'black'; pressGroup([$('inkBlack'), $('inkGraphite')], e.currentTarget); repaint(); };
+$('inkGraphite').onclick = e => { P.ink = 'graphite'; pressGroup([$('inkBlack'), $('inkGraphite')], e.currentTarget); repaint(); };
+function setMode(mode){
+  P.mode = mode;
+  pressGroup([$('modeRed'), $('modePat')], mode === 'red' ? $('modeRed') : $('modePat'));
+  $('modeHint').textContent = mode === 'red'
+    ? 'Click a part to make it red. Click it again to remove the red. Drag the red circle to move it.'
+    : `Click a part to give it the next of ${ALL.length} patterns. Hover a part to see its current pattern in the corner of the canvas.`;
+}
+$('modeRed').onclick = () => setMode('red');
+$('modePat').onclick = () => setMode('pattern');
+
+/* ---------- light / dark ---------- */
+function setTheme(theme){
+  const light = theme === 'light', b = $('themeBtn');
+  document.body.classList.toggle('light', light);
+  b.querySelector('.i-sun').hidden = light; b.querySelector('.i-moon').hidden = !light;
+  const label = light ? 'Switch to dark mode' : 'Switch to light mode';
+  b.setAttribute('aria-label', label); b.title = label;
+  try { localStorage.setItem('inkwork-theme', theme); } catch (err){}
+}
+let savedTheme = 'dark';
+try { savedTheme = localStorage.getItem('inkwork-theme') || 'dark'; } catch (err){}
+setTheme(savedTheme);
+$('themeBtn').onclick = () => setTheme(document.body.classList.contains('light') ? 'dark' : 'light');
+const swatches = [...document.querySelectorAll('.swatch')];
+for (const s of swatches) s.onclick = () => { P.paper = s.dataset.paper; pressGroup(swatches, s); repaint(); };
+
+/* ---------- clicking parts and dragging the sun ---------- */
+let hoverId = -2, drag = null;
+function toOut(e){ const b = mainC.getBoundingClientRect(); return { x:(e.clientX - b.left) / b.width * A.OW, y:(e.clientY - b.top) / b.height * A.OH }; }
+function regionAt(p){ const x = Math.floor(p.x), y = Math.floor(p.y); if (x < 0 || y < 0 || x >= A.OW || y >= A.OH) return -1; return A.outLabel[y * A.OW + x]; }
+function inDisc(p){ if (!P.disc) return false; const Dg = discGeom(); return Math.hypot(p.x - Dg.x, p.y - Dg.y) <= Dg.r; }
+function setReadout(text){ const el = $('readout'); el.textContent = text; el.hidden = !text; }
+function clearHover(){ overC.getContext('2d').clearRect(0, 0, overC.width, overC.height); hoverId = -2; setReadout(''); }
+function showHover(id){
+  if (id === hoverId) return; hoverId = id;
+  const x = overC.getContext('2d'); x.clearRect(0, 0, overC.width, overC.height);
+  if (id < 0){ setReadout(''); return; }
+  const r = A.regions[id];
+  const ox0 = clamp(Math.floor((r.x0 - A.fx) * A.sc) - 4, 0, A.OW - 1), oy0 = clamp(Math.floor((r.y0 - A.fy) * A.sc) - 4, 0, A.OH - 1);
+  const ox1 = clamp(Math.ceil((r.x1 + 2 - A.fx) * A.sc) + 4, 0, A.OW), oy1 = clamp(Math.ceil((r.y1 + 2 - A.fy) * A.sc) + 4, 0, A.OH);
+  const bw = ox1 - ox0, bh = oy1 - oy0; if (bw < 1 || bh < 1) return;
+  const im = new ImageData(bw, bh);
+  for (let yy = 0; yy < bh; yy++) for (let xx = 0; xx < bw; xx++){
+    const o = (oy0 + yy) * A.OW + ox0 + xx; if (A.outLabel[o] !== id) continue;
+    const p = (yy * bw + xx) * 4, edgeBand = A.D[o] < 4;
+    im.data[p] = 70; im.data[p + 1] = 140; im.data[p + 2] = 250; im.data[p + 3] = edgeBand ? 220 : 46;
+  }
+  x.putImageData(im, ox0, oy0);
+  setReadout(`Part ${id + 1} of ${A.regions.length} · ${NAMES[r.pattern]}${red.has(id) ? ' · red' : ''}`);
+}
+mainC.addEventListener('pointerdown', e => {
+  if (!A) return;
+  const p = toOut(e);
+  drag = { start:p, moved:false, onDisc:inDisc(p), u:disc.u, v:disc.v };
+  mainC.setPointerCapture(e.pointerId);
+});
+mainC.addEventListener('pointermove', e => {
+  if (!A) return;
+  const p = toOut(e);
+  if (drag){
+    if (!drag.moved && Math.hypot(p.x - drag.start.x, p.y - drag.start.y) > 5 && drag.onDisc){ drag.moved = true; mainC.classList.add('grabbing'); clearHover(); }
+    if (drag.moved){
+      disc.u = drag.u + (p.x - drag.start.x) / A.sc / A.bw; disc.v = drag.v + (p.y - drag.start.y) / A.sc / A.bh;
+      repaint();
+    }
+    return;
+  }
+  mainC.classList.toggle('grab', inDisc(p));
+  showHover(regionAt(p));
+});
+mainC.addEventListener('pointerup', e => {
+  if (!A || !drag) return;
+  const was = drag; drag = null; mainC.classList.remove('grabbing');
+  if (was.moved) return;
+  const id = regionAt(toOut(e)); if (id < 0) return;
+  if (P.mode === 'red'){ red.has(id) ? red.delete(id) : red.add(id); thumbParts(); repaint(); hoverId = -2; showHover(id); }
+  else {
+    const cur = A.regions[id].pattern; override.set(id, ALL[(ALL.indexOf(cur) + 1) % ALL.length]);
+    inkRun().then(() => { hoverId = -2; showHover(id); });
+  }
+});
+mainC.addEventListener('pointerleave', () => { if (!drag) clearHover(); });
+mainC.addEventListener('pointercancel', () => { drag = null; mainC.classList.remove('grabbing'); });
+
+/* ---------- saving ---------- */
+let toastT;
+function toast(msg){ const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 3200); }
+const dlReady = (window.claude && typeof window.claude.use === 'function') ? window.claude.use('downloads').catch(() => null) : Promise.resolve(undefined);
+function baseName(){ return ((src && src.name) || 'illustration').replace(/\.[a-z0-9]+$/i, '').replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-').toLowerCase() || 'illustration'; }
+async function save(paper){
+  if (!A) return;
+  const c = mk(A.OW, A.OH); c.getContext('2d').putImageData(compose(paper), 0, 0);
+  const blob = await new Promise(r => c.toBlob(r, 'image/png'));
+  deliver(blob, `${baseName()}-ink${paper === 'none' ? '-no-paper' : ''}.png`);
+}
+async function saveSvg(){
+  if (!A) return;
+  const b = $('busy'); b.textContent = 'Tracing vectors…'; b.hidden = false; await nextFrame();
+  let blob = null;
+  try { blob = buildSvg(P.paper); } catch (err){ console.error(err); toast('The SVG could not be made. Try fewer parts or a lower pattern density.'); }
+  b.textContent = 'Inking…'; b.hidden = busyN === 0;
+  if (blob) deliver(blob, `${baseName()}-ink.svg`);
+}
+async function deliver(blob, filename){
+  const dl = await dlReady;
+  if (dl){
+    try { await dl.save({ filename, data:blob }); toast('Saved ' + filename); return; }
+    catch (err){ if (err && err.code === 'declined'){ toast('Save cancelled.'); return; } if (err && err.code === 'rate_limited'){ toast('A save is already waiting for your answer.'); return; } }
+  }
+  if (dl === undefined){
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000); toast('Saved ' + filename); return;
+  }
+  const im = $('sheetImg'); if (im.src.startsWith('blob:')) URL.revokeObjectURL(im.src);
+  im.src = URL.createObjectURL(blob); $('sheet').hidden = false; $('sheetClose').focus();
+}
+$('saveBtn').onclick = () => save(P.paper);
+$('saveBare').onclick = () => save('none');
+$('saveSvg').onclick = saveSvg;
+$('sheetClose').onclick = () => { $('sheet').hidden = true; };
+$('sheet').addEventListener('click', e => { if (e.target.id === 'sheet') $('sheet').hidden = true; });
+addEventListener('keydown', e => { if (e.key === 'Escape') $('sheet').hidden = true; });
+
+setSource(drawSample(), 'Sample teapot');
+})();
+</script>
+
+</html>
