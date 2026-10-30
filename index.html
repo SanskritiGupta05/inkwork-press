@@ -103,7 +103,20 @@ button{font:inherit;color:inherit}
 .dl-lbl{color:var(--faint);font-size:12px;font-weight:500}
 
 /* workspace */
-.work{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) clamp(248px,25vw,304px);gap:14px;padding-bottom:14px}
+.work{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) clamp(248px,25vw,304px);gap:14px;padding-bottom:22px}
+
+/* credit line */
+.credit{text-align:center;font-size:12px;line-height:20px;color:var(--faint);padding-block:18px 16px;
+  background:radial-gradient(circle,var(--dot) 1.1px,transparent 1.5px) 0 0/8px 3px repeat-x}
+.credit strong{font-weight:500;color:var(--muted)}
+.credit a.x,.claude{display:inline-flex;align-items:center;vertical-align:top;height:20px}
+.credit a.x{color:var(--muted);text-decoration:none;white-space:nowrap}
+.credit a.x:hover .handle{color:var(--text);text-decoration:underline;text-underline-offset:2px}
+.xmark{display:inline-grid;place-items:center;width:16px;height:16px;margin-right:5px;border-radius:4px;color:#fff;background:linear-gradient(180deg,#34343a,#000);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 0 0 1px rgba(0,0,0,.5),0 1px 0 #000}
+.xmark svg{width:9px;height:9px;display:block}
+.times{margin-inline:4px;color:var(--faint)}
+.claude{white-space:nowrap}
+.spark{width:14px;height:14px;margin-right:5px;display:block;flex:none}
 .left{min-width:0;min-height:0;display:flex;flex-direction:column;gap:12px}
 
 /* Figma-style canvas */
@@ -194,7 +207,25 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:0;border-radiu
   .rail{overflow:visible}
   .strip{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* motion: one soft entrance, then only small acknowledgements */
+@keyframes rise{from{opacity:.65;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes chipIn{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes sheetIn{from{opacity:.6;transform:translateY(8px) scale(.988)}to{opacity:1;transform:none}}
+@keyframes glow{0%,100%{box-shadow:0 2px 6px rgba(200,40,30,.4)}50%{box-shadow:0 2px 14px rgba(220,60,45,.8)}}
+@keyframes pulse{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.top{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+.left{animation:rise .55s .06s cubic-bezier(.2,.8,.2,1) both}
+.rail{animation:rise .55s .12s cubic-bezier(.2,.8,.2,1) both}
+.credit{animation:rise .55s .2s cubic-bezier(.2,.8,.2,1) both}
+.art.enter{animation:sheetIn .55s cubic-bezier(.2,.8,.2,1)}
+.chip,.toast{animation:chipIn .18s ease-out}
+.toast{animation-name:chipInCentered}
+@keyframes chipInCentered{from{opacity:.4;transform:translate(-50%,6px)}to{opacity:1;transform:translate(-50%,0)}}
+.brand h1 .sun{animation:glow 3.6s ease-in-out infinite}
+.busy::before{content:"";display:inline-block;width:6px;height:6px;margin-right:8px;border-radius:50%;background:var(--red-top);vertical-align:1px;animation:pulse .9s ease-in-out infinite}
+.claude:hover .spark{animation:spin 1.6s linear infinite}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
 <header class="top">
@@ -294,6 +325,13 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:0;border-radiu
     </div>
   </aside>
 </div>
+
+<footer class="credit">
+  Made by <strong>Sanskriti Gupta</strong> (<a class="x" href="https://x.com/GuptaSanskritii" target="_blank" rel="noopener noreferrer"><span class="xmark" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></span><span class="handle">@GuptaSanskritii</span></a>)
+  <span class="times" aria-hidden="true">×</span>
+  <span class="claude"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6v6.8M12 14.6v6.8M2.6 12h6.8M14.6 12h6.8M5.4 5.4l4.8 4.8M13.8 13.8l4.8 4.8M18.6 5.4l-4.8 4.8M10.2 13.8l-4.8 4.8" stroke="#d97757" stroke-width="2.6" stroke-linecap="round" fill="none"/></svg><strong>Claude</strong></span>
+  via tokenmaxxing
+</footer>
 
 <div class="toast" id="toast" hidden></div>
 <div class="sheet" id="sheet" hidden>
@@ -1166,6 +1204,7 @@ function fullRun(){
   return busy(() => {
     A = analyze(src.canvas); buildOutLabel(); override.clear(); defaultRed();
     thumbCutout(); buildInk(); thumbParts(); thumbInk(); paint(); clearHover();
+    const art = $('art'); art.classList.remove('enter'); void art.offsetWidth; art.classList.add('enter');
   });
 }
 function inkRun(){ return busy(() => { if (!A) return; buildInk(); thumbParts(); thumbInk(); paint(); }); }
