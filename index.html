@@ -38,6 +38,7 @@
   --red-side:#761510;
   --red:#c8312b;
   --focus:#86a8ff;
+  --scrim:rgba(6,6,8,.68);
   --panel-shadow:0 24px 48px -20px rgba(0,0,0,.75),0 2px 6px rgba(0,0,0,.4);
   --f-display:"Rozha One","Iowan Old Style",Georgia,serif;
   --f-body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -69,6 +70,7 @@ body.light{
   --sel-text:#ffffff;
   --sel-side:#000000;
   --focus:#2563eb;
+  --scrim:rgba(24,24,34,.48);
   --panel-shadow:0 24px 44px -22px rgba(20,20,45,.3),0 2px 6px rgba(20,20,45,.08);
   color-scheme:light;
 }
@@ -207,6 +209,30 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:0;border-radiu
   .rail{overflow:visible}
   .strip{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+/* first-visit guide: a spotlight that glides between controls, with a raised card beside it */
+.tour{position:fixed;inset:0;z-index:40}
+.tour-spot{position:fixed;border-radius:14px;pointer-events:none;box-shadow:0 0 0 2px rgba(255,255,255,.55),0 0 0 9999px var(--scrim);transition:left .45s cubic-bezier(.2,.8,.2,1),top .45s cubic-bezier(.2,.8,.2,1),width .45s cubic-bezier(.2,.8,.2,1),height .45s cubic-bezier(.2,.8,.2,1)}
+.tour-card,.welcome{position:fixed;color:var(--text);border-radius:16px;background:linear-gradient(180deg,var(--panel-top),var(--panel-bot));box-shadow:inset 0 1px 0 var(--hi),0 0 0 1px var(--edge),0 26px 52px -18px rgba(0,0,0,.65)}
+.tour-card{width:min(320px,calc(100vw - 32px));padding:18px 18px 14px;transition:left .45s cubic-bezier(.2,.8,.2,1),top .45s cubic-bezier(.2,.8,.2,1)}
+.tour-card.in{animation:chipIn .3s ease-out}
+.tour-card.docked{left:16px;right:16px;top:auto;bottom:calc(16px + env(safe-area-inset-bottom,0px));width:auto}
+.tour-step{font:500 10.5px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--red-top)}
+.tour-card h3,.welcome h3{margin:8px 0 6px;font:600 16px/1.3 var(--f-body);text-wrap:balance}
+.tour-card p,.welcome p{margin:0;color:var(--muted);font-size:13px;line-height:1.55}
+.tour-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px}
+.tour-dots{display:flex;gap:5px;align-items:center}
+.tour-dots i{width:6px;height:6px;border-radius:3px;background:var(--well);box-shadow:inset 0 1px 1px var(--well-shade),inset 0 0 0 1px var(--line);transition:width .3s,background .3s}
+.tour-dots i.on{width:18px;background:linear-gradient(180deg,var(--red-top),var(--red-bot));box-shadow:none}
+.tour-btns{display:flex;gap:8px;align-items:center}
+.ghost{font:500 12.5px/1 var(--f-body);color:var(--muted);background:none;border:0;padding:8px 6px;cursor:pointer}
+.ghost:hover{color:var(--text)}
+.welcome{left:50%;top:50%;width:min(380px,calc(100vw - 32px));padding:22px 22px 18px;text-align:center;transform:translate(-50%,-50%);animation:welcomeIn .4s cubic-bezier(.2,.8,.2,1)}
+.tour-spot.bare{box-shadow:0 0 0 9999px var(--scrim)}
+@keyframes welcomeIn{from{transform:translate(-50%,-46%) scale(.98)}to{opacity:1;transform:translate(-50%,-50%)}}
+.welcome canvas{display:block;margin:0 auto 16px;max-width:100%;border-radius:3px;box-shadow:0 1px 1px rgba(0,0,0,.2),0 10px 22px -10px rgba(0,0,0,.6)}
+.welcome .tour-btns{justify-content:center;margin-top:18px}
+.welcome .meta{margin-top:10px;font-size:11.5px;color:var(--faint)}
+
 /* motion: one soft entrance, then only small acknowledgements */
 @keyframes rise{from{opacity:.65;transform:translateY(6px)}to{opacity:1;transform:none}}
 @keyframes chipIn{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
@@ -243,6 +269,9 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:0;border-radiu
       <button class="key" id="saveSvg" type="button" title="Editable vectors with paper, red and ink on separate layers">SVG</button>
     </div>
     <span class="divider" aria-hidden="true"></span>
+    <button class="key icon" id="helpBtn" type="button" aria-label="Show the guide" title="Show the guide">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.1-2.4 3.6"/><path d="M12 17.4h.01"/></svg>
+    </button>
     <button class="key icon" id="themeBtn" type="button" aria-label="Switch to light mode" title="Switch to light mode">
       <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
       <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
@@ -332,6 +361,33 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:0;border-radiu
   <span class="claude"><svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6v6.8M12 14.6v6.8M2.6 12h6.8M14.6 12h6.8M5.4 5.4l4.8 4.8M13.8 13.8l4.8 4.8M18.6 5.4l-4.8 4.8M10.2 13.8l-4.8 4.8" stroke="#d97757" stroke-width="2.6" stroke-linecap="round" fill="none"/></svg><strong>Claude</strong></span>
   via tokenmaxxing
 </footer>
+
+<div class="tour" id="tour" hidden>
+  <div class="tour-spot" id="tourSpot"></div>
+  <div class="welcome" id="welcome" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle" hidden>
+    <canvas id="welcomeArt" width="10" height="10" aria-hidden="true"></canvas>
+    <h3 id="welcomeTitle">Welcome to Inkwork Press</h3>
+    <p>Turn any PNG into a black-and-red ornamental ink illustration, with patterned parts, a red sun and real-looking paper.</p>
+    <p class="meta">Four quick steps · about 20 seconds</p>
+    <div class="tour-btns">
+      <button class="ghost" type="button" id="welcomeSkip">Skip</button>
+      <button class="key primary" type="button" id="welcomeGo">Show me how</button>
+    </div>
+  </div>
+  <div class="tour-card" id="tourCard" role="dialog" aria-modal="true" aria-labelledby="tourTitle" hidden>
+    <div class="tour-step" id="tourStep"></div>
+    <h3 id="tourTitle"></h3>
+    <p id="tourText"></p>
+    <div class="tour-foot">
+      <div class="tour-dots" id="tourDots" aria-hidden="true"></div>
+      <div class="tour-btns">
+        <button class="ghost" type="button" id="tourSkip">Skip</button>
+        <button class="key small" type="button" id="tourBack">Back</button>
+        <button class="key small primary" type="button" id="tourNext">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="toast" id="toast" hidden></div>
 <div class="sheet" id="sheet" hidden>
@@ -1406,6 +1462,93 @@ $('saveSvg').onclick = saveSvg;
 $('sheetClose').onclick = () => { $('sheet').hidden = true; };
 $('sheet').addEventListener('click', e => { if (e.target.id === 'sheet') $('sheet').hidden = true; });
 addEventListener('keydown', e => { if (e.key === 'Escape') $('sheet').hidden = true; });
+
+/* ---------- first-visit guide ---------- */
+const TOUR = [
+  { target:() => [$('openBtn')], title:'Upload your image', text:'Start with a PNG or JPG. Cut-outs on a transparent background work best. A sample teapot is already loaded, so you can try everything right away.' },
+  { target:() => [$('stage')], title:'Click the drawing', text:'Click any part to paint it red. To change a part’s pattern instead, pick “Change pattern” at the top of the right panel, then click. Drag the red circle to move it.' },
+  { target:() => [document.querySelector('.rail')], title:'Fine-tune the style', text:'Set how many parts there are, how dense the patterns are, the line weight, the red circle and the paper.' },
+  { target:() => [$('saveBtn'), $('saveSvg')], title:'Download', text:'PNG keeps the paper. Transparent PNG is ink and red only. SVG gives you editable vector layers for Figma or Illustrator.' },
+];
+let tourAt = -1;
+const tourOpen = () => !$('tour').hidden;
+
+function unionRect(els){
+  let l = Infinity, t = Infinity, r = -Infinity, b = -Infinity;
+  for (const el of els){ const q = el.getBoundingClientRect(); l = Math.min(l, q.left); t = Math.min(t, q.top); r = Math.max(r, q.right); b = Math.max(b, q.bottom); }
+  return { left:l, top:t, right:r, bottom:b, width:r - l, height:b - t };
+}
+function placeSpot(r, pad){
+  $('tourSpot').classList.toggle('bare', r.width === 0);
+  const s = $('tourSpot').style;
+  s.left = (r.left - pad) + 'px'; s.top = (r.top - pad) + 'px'; s.width = (r.width + pad * 2) + 'px'; s.height = (r.height + pad * 2) + 'px';
+}
+function centerSpot(){ placeSpot({ left:innerWidth / 2, top:innerHeight / 2, width:0, height:0 }, 0); }
+/* Beside the target if there is room (right, left, below, above), otherwise tucked inside its corner; docked to the bottom on phones. */
+function placeCard(r){
+  const card = $('tourCard'), vw = innerWidth, vh = innerHeight, m = 16, gap = 22;
+  if (vw < 640){ card.classList.add('docked'); card.style.left = card.style.top = ''; return; }
+  card.classList.remove('docked');
+  const cw = card.offsetWidth, ch = card.offsetHeight;
+  const cy = clamp(r.top + r.height / 2 - ch / 2, m, vh - m - ch), cx = clamp(r.left + r.width / 2 - cw / 2, m, vw - m - cw);
+  const fits = (x, y) => x >= m && y >= m && x + cw <= vw - m && y + ch <= vh - m;
+  const pos = [[r.right + gap, cy], [r.left - gap - cw, cy], [cx, r.bottom + gap], [cx, r.top - gap - ch]].find(([x, y]) => fits(x, y))
+    || [clamp(r.right - cw - 24, m, vw - m - cw), clamp(r.bottom - ch - 24, m, vh - m - ch)];
+  card.style.left = pos[0] + 'px'; card.style.top = pos[1] + 'px';
+}
+function positionStep(){ if (tourAt < 0) return; const r = unionRect(TOUR[tourAt].target()); placeSpot(r, 8); placeCard(r); }
+function showStep(i){
+  tourAt = i;
+  const st = TOUR[i], card = $('tourCard');
+  $('welcome').hidden = true; card.hidden = false;
+  $('tourStep').textContent = `Step ${i + 1} of ${TOUR.length}`;
+  $('tourTitle').textContent = st.title; $('tourText').textContent = st.text;
+  $('tourBack').hidden = i === 0;
+  $('tourNext').textContent = i === TOUR.length - 1 ? 'Start creating' : 'Next';
+  $('tourDots').innerHTML = TOUR.map((_, k) => `<i class="${k === i ? 'on' : ''}"></i>`).join('');
+  st.target()[0].scrollIntoView({ block:'nearest' });
+  card.classList.remove('in'); void card.offsetWidth; card.classList.add('in');
+  positionStep();
+  $('tourNext').focus({ preventScroll:true });
+}
+function drawWelcomeArt(){
+  const c = $('welcomeArt');
+  if (!A || mainC.width < 20){ c.hidden = true; return; }
+  const k = Math.min(300 / A.OW, 170 / A.OH);
+  c.width = Math.round(A.OW * k); c.height = Math.round(A.OH * k); c.hidden = false;
+  const x = c.getContext('2d'); x.imageSmoothingQuality = 'high'; x.drawImage(mainC, 0, 0, c.width, c.height);
+}
+function openTour(withWelcome){
+  $('tour').hidden = false; clearHover();
+  if (withWelcome){
+    tourAt = -1; $('tourCard').hidden = true; centerSpot();
+    drawWelcomeArt(); $('welcome').hidden = false; $('welcomeGo').focus({ preventScroll:true });
+  } else showStep(0);
+}
+function closeTour(){
+  $('tour').hidden = true; tourAt = -1;
+  try { localStorage.setItem('inkwork-guide-seen', '1'); } catch (err){}
+  $('helpBtn').focus({ preventScroll:true });
+}
+$('welcomeGo').onclick = () => showStep(0);
+$('welcomeSkip').onclick = closeTour;
+$('tourSkip').onclick = closeTour;
+$('tourBack').onclick = () => showStep(Math.max(0, tourAt - 1));
+$('tourNext').onclick = () => tourAt >= TOUR.length - 1 ? closeTour() : showStep(tourAt + 1);
+$('helpBtn').onclick = () => openTour(false);
+addEventListener('keydown', e => {
+  if (!tourOpen()) return;
+  if (e.key === 'Escape'){ e.preventDefault(); closeTour(); }
+  else if (tourAt >= 0 && e.key === 'ArrowRight') $('tourNext').click();
+  else if (tourAt > 0 && e.key === 'ArrowLeft') $('tourBack').click();
+});
+addEventListener('resize', () => { if (tourOpen()) tourAt >= 0 ? positionStep() : centerSpot(); });
+
+/* First visit: welcome card, then the tour. #welcome-tour shows it again on demand. */
+let guideSeen = false;
+try { guideSeen = localStorage.getItem('inkwork-guide-seen') === '1'; } catch (err){}
+if (location.hash === '#welcome-tour' || !guideSeen) setTimeout(() => openTour(true), 1100);
+addEventListener('hashchange', () => { if (location.hash === '#welcome-tour') openTour(true); });
 
 setSource(drawSample(), 'Sample teapot');
 })();
